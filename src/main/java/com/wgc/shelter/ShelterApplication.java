@@ -3,7 +3,7 @@ package com.wgc.shelter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.wgc"})
 public class ShelterApplication {
 
     public static void main(String[] args) {

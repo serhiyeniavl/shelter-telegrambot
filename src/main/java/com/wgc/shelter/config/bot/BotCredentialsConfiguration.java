@@ -1,9 +1,17 @@
 package com.wgc.shelter.config.bot;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.context.annotation.Configuration;
 
+@Data
+@Configuration
 @ConfigurationProperties("telegram.bot")
-@ConstructorBinding
-public record BotCredentialsConfiguration(String botUserName, String token) { }
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class BotCredentialsConfiguration {
+    String botUserName;
+    String token;
+}
 
