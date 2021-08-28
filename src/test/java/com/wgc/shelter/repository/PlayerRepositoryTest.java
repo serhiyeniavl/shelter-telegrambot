@@ -1,6 +1,7 @@
 package com.wgc.shelter.repository;
 
-import com.wgc.shelter.model.Player;
+import com.wgc.shelter.model.User;
+import com.wgc.shelter.model.UserActionState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 class PlayerRepositoryTest {
 
     @Autowired
-    private PlayerRepository playerRepository;
+    private UserRepository playerRepository;
 
     @BeforeEach
     void clean() {
@@ -21,7 +22,7 @@ class PlayerRepositoryTest {
     @Test
     void saveTest() {
         long telegramUserId = 4312412341L;
-        Player expected = new Player(null, telegramUserId);
+        User expected = new User(telegramUserId, UserActionState.NEW_USER);
         playerRepository.save(expected);
 
         Assertions.assertEquals(expected, playerRepository.findByTelegramUserId(telegramUserId).get());
