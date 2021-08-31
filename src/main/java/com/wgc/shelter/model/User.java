@@ -21,4 +21,6 @@ public class User {
     Long telegramUserId;
 
     UserActionState state;
+
+    String locale;
 }

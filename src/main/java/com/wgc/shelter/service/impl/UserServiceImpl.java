@@ -8,9 +8,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -27,11 +26,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public User addNewUser(Long telegramUserId) {
+    public User addNewUser(Long telegramUserId, Locale locale) {
         return userRepository.save(User.builder()
                 .telegramUserId(telegramUserId)
                 .state(UserActionState.NEW_USER)
+                .locale(locale.toString())
                 .build());
     }
 }

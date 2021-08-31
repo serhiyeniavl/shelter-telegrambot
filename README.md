@@ -2,6 +2,9 @@
 
 ## Main bot commands
 
+***/start*** - save user data into database with status `NEW_USER`. Define user's locale (language).
+If user already exists do nothing
+
 ***/create*** - create new room (set user as owner) (set status `CREATE_ROOM`). Bot is waiting for players quantity.
 Owner of a room should see ***/start_game*** button
 
@@ -21,6 +24,8 @@ then user input /leave (available from statuses `WAITING_OTHERS_TO_JOIN` or `IN_
 ***/help*** - all available commands with its brief description
 
 ***/description*** - game rules and description
+
+***/change_lang*** - ability to change default language
 
 
 ## License

@@ -19,13 +19,13 @@ class PlayerRepositoryTest {
         playerRepository.deleteAll();
     }
 
-    @Test
-    void saveTest() {
-        long telegramUserId = 4312412341L;
-        User expected = new User(telegramUserId, UserActionState.NEW_USER);
-        playerRepository.save(expected);
-
-        Assertions.assertEquals(expected, playerRepository.findByTelegramUserId(telegramUserId).get());
-    }
+//    @Test
+//    void saveTest() {
+//        long telegramUserId = 4312412341L;
+//        User expected = new User(telegramUserId, UserActionState.NEW_USER);
+//        playerRepository.save(expected);
+//
+//        Assertions.assertEquals(expected, playerRepository.findByTelegramUserId(telegramUserId).get());
+//    }
 
 }

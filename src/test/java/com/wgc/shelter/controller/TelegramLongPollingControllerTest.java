@@ -1,8 +1,12 @@
 package com.wgc.shelter.controller;
 
+import com.wgc.shelter.model.UserActionState;
+import com.wgc.shelter.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,9 +27,46 @@ class TelegramLongPollingControllerTest {
 
     @SpyBean
     private TelegramLongPollingController telegramLongPollingController;
+    @Autowired
+    private UserRepository userRepository;
+
+    @BeforeEach
+    void clear() {
+        userRepository.deleteAll();
+    }
 
     @Test
-    void onUpdateReceived() throws TelegramApiException { //TODO: clean up this mess a little bit, transactions doesnt work
+    void onUpdateReceived() throws TelegramApiException {
+        User user = new User(100L, "user", false);
+        user.setLanguageCode("en-US");
+
+        Message message = new Message();
+        message.setMessageId(1);
+        message.setFrom(user);
+        message.setText("/start");
+        message.setEntities(Collections.singletonList(new MessageEntity(EntityType.BOTCOMMAND, 0, 15)));
+        message.setChat(new Chat(1L, "private"));
+
+        Update update = new Update();
+        update.setUpdateId(1);
+        update.setMessage(message);
+
+        SendMessage hello_msg = SendMessage.builder()
+                .chatId(String.valueOf(update.getMessage().getChatId()))
+                .text("hello msg")
+                .build();
+        Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(hello_msg);
+
+        Assertions.assertDoesNotThrow(() -> telegramLongPollingController.onUpdateReceived(update));
+
+        com.wgc.shelter.model.User actual = userRepository.findByTelegramUserId(100L).get();
+        Assertions.assertEquals(
+                com.wgc.shelter.model.User.builder().telegramUserId(100L).state(UserActionState.NEW_USER).locale("en_US").build(),
+                actual);
+    }
+
+    @Test
+    void onUpdateReceivedBotRequestFailed() throws TelegramApiException {
         User user = new User(100L, "user", false);
 
         Message message = new Message();
@@ -41,10 +82,12 @@ class TelegramLongPollingControllerTest {
 
         SendMessage hello_msg = SendMessage.builder()
                 .chatId(String.valueOf(update.getMessage().getChatId()))
-                .text("hello msg") //TODO: message prop put in enum
+                .text("hello msg")
                 .build();
-        Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(hello_msg);
+        Mockito.doThrow(new RuntimeException()).when(telegramLongPollingController).execute(hello_msg);
 
-        Assertions.assertDoesNotThrow(() -> telegramLongPollingController.onUpdateReceived(update));
+        Assertions.assertThrows(RuntimeException.class, () -> telegramLongPollingController.onUpdateReceived(update));
+
+        Assertions.assertTrue(userRepository.findByTelegramUserId(100L).isEmpty());
     }
 }
