@@ -1,6 +1,7 @@
 package com.wgc.shelter.action;
 
 import com.wgc.shelter.action.impl.UnknownCommandAction;
+import com.wgc.shelter.aop.annotation.Loggable;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,6 +28,7 @@ public class UserInputResolver {
         this.userInputHandler = userInputHandler;
     }
 
+    @Loggable
     public RawInput isCommand(Update update, Consumer<CommandAction> commandAction) {
         Message message = update.getMessage();
         if (Objects.nonNull(message) && message.isCommand()) {

@@ -2,6 +2,7 @@ package com.wgc.shelter.action.impl;
 
 import com.wgc.shelter.action.CommandAction;
 import com.wgc.shelter.action.annotation.Action;
+import com.wgc.shelter.action.factory.KeyboardFactory;
 import com.wgc.shelter.action.message.MessageCode;
 import com.wgc.shelter.action.model.UserCommand;
 import com.wgc.shelter.action.utils.TelegramApiExecutorWrapper;
@@ -20,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -40,9 +43,13 @@ public class CreateCommandAction implements CommandAction {
     @Override
     @Transactional
     public void handleCommand(TelegramLongPollingBot executor, Update update) {
-        SendMessage messageToSend;
+        SendMessage messageToSend = SendMessage.builder()
+                .chatId(UpdateObjectWrapperUtils.getChaId(update))
+                .text("")
+                .build();
         Long userTelegramId = UpdateObjectWrapperUtils.getUserTelegramId(update);
         User user = userService.retrieveExistingUser(userTelegramId);
+        Locale locale = new Locale(user.getLocale());
         if (Objects.equals(user.getState(), UserActionState.NEW_USER)) {
             roomService.createRoom(Room.builder()
                     .ownerId(userTelegramId)
@@ -53,16 +60,25 @@ public class CreateCommandAction implements CommandAction {
                     .build());
             userService.save(user.setState(UserActionState.CREATE_ROOM));
 
-            messageToSend = SendMessage.builder()
-                    .chatId(UpdateObjectWrapperUtils.getChaId(update))
-                    .text(messageSource.getMessage(MessageCode.INPUT_ROOM_PARTICIPANTS_QUANTITY.getCode(),
-                            null, new Locale(user.getLocale())))
-                    .build();
+            messageToSend.setText(messageSource.getMessage(MessageCode.INPUT_ROOM_PARTICIPANTS_QUANTITY.getCode(),
+                    null, locale));
         } else {
-            messageToSend = null;
-            //TODO: message resolver
+            if (Objects.equals(user.getState(), UserActionState.CREATE_ROOM)) {
+                roomAlreadyCreated(messageToSend, locale);
+            }
         }
         TelegramApiExecutorWrapper.execute(executor, messageToSend);
+    }
+
+    private void roomAlreadyCreated(SendMessage messageToSend, Locale locale) {
+
+        InlineKeyboardButton buttonYes = KeyboardFactory.createInlineKeyboardButton(
+                messageSource.getMessage(MessageCode.ANSWER_YES.getCode(), null, locale));
+        InlineKeyboardButton buttonNo = KeyboardFactory.createInlineKeyboardButton(
+                messageSource.getMessage(MessageCode.ANSWER_NO.getCode(), null, locale));
+
+        messageToSend.setText(messageSource.getMessage(MessageCode.ALREADY_CREATED.getCode(), null, locale));
+        messageToSend.setReplyMarkup(new InlineKeyboardMarkup(KeyboardFactory.createInlineKeyboardButtonRow(buttonYes, buttonNo)));
     }
 
     @Override
