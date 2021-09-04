@@ -12,5 +12,11 @@ public interface UserService {
     Optional<User> findByTelegramUserId(Long telegramUserId);
 
     @Transactional(propagation = Propagation.SUPPORTS)
+    User retrieveExistingUser(Long telegramUserId);
+
+    @Transactional(propagation = Propagation.SUPPORTS)
     User addNewUser(Long telegramUserId, Locale locale);
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    User save(User user);
 }

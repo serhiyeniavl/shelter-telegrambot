@@ -2,13 +2,16 @@ package com.wgc.shelter.action.impl;
 
 import com.wgc.shelter.action.CommandAction;
 import com.wgc.shelter.action.annotation.Action;
+import com.wgc.shelter.action.message.MessageCode;
 import com.wgc.shelter.action.model.UserCommand;
 import com.wgc.shelter.action.utils.TelegramApiExecutorWrapper;
+import com.wgc.shelter.action.utils.UpdateObjectWrapperUtils;
 import com.wgc.shelter.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -25,15 +28,16 @@ public class StartCommandAction implements CommandAction {
     MessageSource messageSource;
 
     @Override
+    @Transactional
     public void handleCommand(final TelegramLongPollingBot executor, final Update update) {
         Message message = update.getMessage();
-        Long telegramUserId = message.getFrom().getId();
+        Long telegramUserId = UpdateObjectWrapperUtils.getUserTelegramId(update);
         if (userService.findByTelegramUserId(telegramUserId).isEmpty()) {
             Locale locale = Locale.forLanguageTag(message.getFrom().getLanguageCode());
             userService.addNewUser(telegramUserId, locale);
             var messageToSend = SendMessage.builder()
-                    .chatId(String.valueOf(update.getMessage().getChatId()))
-                    .text(messageSource.getMessage("hello", null, locale))
+                    .chatId(UpdateObjectWrapperUtils.getChaId(update))
+                    .text(messageSource.getMessage(MessageCode.HELLO.getCode(), null, locale))
                     .build();
             TelegramApiExecutorWrapper.execute(executor, messageToSend);
         }

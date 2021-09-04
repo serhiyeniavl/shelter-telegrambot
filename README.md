@@ -5,11 +5,12 @@
 ***/start*** - save user data into database with status `NEW_USER`. Define user's locale (language).
 If user already exists do nothing
 
-***/create*** - create new room (set user as owner) (set status `CREATE_ROOM`). Bot is waiting for players quantity.
+***/create*** - create new room (set user as owner) (set status `CREATE_ROOM`). Check user status `NEW_USER` 
+if it isn't then send appropriate message depend on user's status. Bot is waiting for players quantity.
 Owner of a room should see ***/start_game*** button
 
-***/start_game*** - could be invoked in `WAITING_OTHERS_TO_JOIN` by chat owner only. When all users have joined the room
-game owner is able to start the game.
+***/start_game*** - could be invoked with status `WAITING_OTHERS_TO_JOIN` by chat owner only.
+When all users have joined the room game owner is able to start the game.
 Start the game means send for all participants of this room their roles in a game
 and delete this room from database after particular amount of time (if error during
 the message delivery from bot to user bot will retry sending while room exists) and set for all participants status `NEW_USER`
