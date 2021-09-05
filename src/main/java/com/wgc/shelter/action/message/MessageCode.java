@@ -5,7 +5,10 @@ public enum MessageCode {
     INPUT_ROOM_PARTICIPANTS_QUANTITY("input.participants.quantity"),
     ALREADY_CREATED("already.created"),
     ANSWER_YES("answer.yes"),
-    ANSWER_NO("answer.no");
+    ANSWER_NO("answer.no"),
+    CANT_CREATE_ROOM_WISH_TO_LEAVE("cant.create.room.wish.to.leave"),
+    ROOM_SUCCESSFULLY_DELETED("room.deleted"),
+    USER_DOESNT_HAVE_ROOM("user.doesnt.have.room");
 
     public String getCode() {
         return messageBundleCode;

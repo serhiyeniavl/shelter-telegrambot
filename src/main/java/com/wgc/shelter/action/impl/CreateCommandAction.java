@@ -26,8 +26,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 @Action
 @RequiredArgsConstructor
@@ -50,35 +52,51 @@ public class CreateCommandAction implements CommandAction {
         Long userTelegramId = UpdateObjectWrapperUtils.getUserTelegramId(update);
         User user = userService.retrieveExistingUser(userTelegramId);
         Locale locale = new Locale(user.getLocale());
-        if (Objects.equals(user.getState(), UserActionState.NEW_USER)) {
-            roomService.createRoom(Room.builder()
-                    .ownerId(userTelegramId)
-                    .state(RoomState.NEW)
-                    .lastActionDate(LocalDateTime.now())
-                    .playersQuantity(ROOM_MINIMUM_PLAYERS_QUANTITY)
-                    .players(Collections.singleton(user.getTelegramUserId()))
-                    .build());
-            userService.save(user.setState(UserActionState.CREATE_ROOM));
-
-            messageToSend.setText(messageSource.getMessage(MessageCode.INPUT_ROOM_PARTICIPANTS_QUANTITY.getCode(),
-                    null, locale));
+        UserActionState userState = user.getState();
+        if (Objects.equals(userState, UserActionState.NEW_USER)) {
+            createNewRoom(messageToSend, userTelegramId, user, locale);
+        } else if (Objects.equals(userState, UserActionState.CREATE_ROOM)) {
+            sendRoomAlreadyCreated(messageToSend, locale, userTelegramId);
         } else {
-            if (Objects.equals(user.getState(), UserActionState.CREATE_ROOM)) {
-                roomAlreadyCreated(messageToSend, locale);
-            }
+            sendCantCreateRoomWithActiveSession(messageToSend, userTelegramId, locale);
         }
         TelegramApiExecutorWrapper.execute(executor, messageToSend);
     }
 
-    private void roomAlreadyCreated(SendMessage messageToSend, Locale locale) {
+    private void sendCantCreateRoomWithActiveSession(SendMessage messageToSend, Long userTelegramId, Locale locale) {
+        String command = roomService.findRoom(userTelegramId)
+                .map(room -> UserCommand.DESTROY.getCommand().concat(" " + userTelegramId))
+                .orElseGet(UserCommand.LEAVE::getCommand);
 
+        InlineKeyboardButton leaveOrDestroyApproveButton = KeyboardFactory.createInlineKeyboardButton(
+                messageSource.getMessage(MessageCode.ANSWER_YES.getCode(), null, locale), command);
+
+        messageToSend.setReplyMarkup(new InlineKeyboardMarkup(List.of(List.of(leaveOrDestroyApproveButton))));
+        messageToSend.setText(messageSource.getMessage(MessageCode.CANT_CREATE_ROOM_WISH_TO_LEAVE.getCode(), null, locale));
+    }
+
+    private void createNewRoom(SendMessage messageToSend, Long userTelegramId, User user, Locale locale) {
+        roomService.createRoom(Room.builder()
+                .ownerId(userTelegramId)
+                .state(RoomState.NEW)
+                .lastActionDate(LocalDateTime.now())
+                .playersQuantity(ROOM_MINIMUM_PLAYERS_QUANTITY)
+                .players(Collections.singleton(user.getTelegramUserId()))
+                .build());
+        userService.save(user.setState(UserActionState.CREATE_ROOM));
+
+        messageToSend.setText(messageSource.getMessage(MessageCode.INPUT_ROOM_PARTICIPANTS_QUANTITY.getCode(),
+                null, locale));
+    }
+
+    private void sendRoomAlreadyCreated(SendMessage messageToSend, Locale locale, Long userTelegramId) {
         InlineKeyboardButton buttonYes = KeyboardFactory.createInlineKeyboardButton(
-                messageSource.getMessage(MessageCode.ANSWER_YES.getCode(), null, locale));
+                messageSource.getMessage(MessageCode.ANSWER_YES.getCode(), null, locale), UserCommand.DESTROY.getCommand() + " " + userTelegramId);
         InlineKeyboardButton buttonNo = KeyboardFactory.createInlineKeyboardButton(
-                messageSource.getMessage(MessageCode.ANSWER_NO.getCode(), null, locale));
+                messageSource.getMessage(MessageCode.ANSWER_NO.getCode(), null, locale), UserCommand.INPUT.getCommand());
 
         messageToSend.setText(messageSource.getMessage(MessageCode.ALREADY_CREATED.getCode(), null, locale));
-        messageToSend.setReplyMarkup(new InlineKeyboardMarkup(KeyboardFactory.createInlineKeyboardButtonRow(buttonYes, buttonNo)));
+        messageToSend.setReplyMarkup(new InlineKeyboardMarkup(List.of(List.of(buttonYes, buttonNo))));
     }
 
     @Override

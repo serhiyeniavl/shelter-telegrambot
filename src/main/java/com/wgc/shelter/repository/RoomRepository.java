@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface RoomRepository extends MongoRepository<Room, Long> {
 
     Optional<Room> findByOwnerId(Long ownerId);
+
+    void deleteByOwnerId(Long ownerId);
 }

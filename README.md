@@ -18,7 +18,8 @@ the message delivery from bot to user bot will retry sending while room exists) 
 ***/join*** - join the existing room by its number (set status `JOINING_ROOM`)
 
 ***/leave*** - abandon current room: during whe waiting others users to join the room something can go wrong,
-then user input /leave (available from statuses `WAITING_OTHERS_TO_JOIN` or `IN_PLAY`)
+then user input /leave (available from statuses `WAITING_OTHERS_TO_JOIN` or `IN_PLAY`). Can be invoked in any other
+status as well.
 
 ***/destroy*** - delete room (only for room owner) (set status `DELETING_ROOM` and wait for user's confirmation)
 

@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User retrieveExistingUser(Long telegramUserId) {
-        return userRepository.findByTelegramUserId(telegramUserId)
+        return findByTelegramUserId(telegramUserId)
                 .orElseThrow(() -> new ShelterBotException("User not found"));
     }
 

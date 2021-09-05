@@ -1,10 +1,13 @@
 package com.wgc.shelter.action;
 
 import com.wgc.shelter.action.impl.UnknownCommandAction;
+import com.wgc.shelter.action.model.UserCommand;
+import com.wgc.shelter.action.utils.UpdateObjectWrapperUtils;
 import com.wgc.shelter.aop.annotation.Loggable;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -32,8 +35,11 @@ public class UserInputResolver {
     public RawInput isCommand(Update update, Consumer<CommandAction> commandAction) {
         Message message = update.getMessage();
         if (Objects.nonNull(message) && message.isCommand()) {
-            CommandAction command = this.commands.getOrDefault(message.getText(), new UnknownCommandAction());
-            commandAction.accept(command);
+            commandAction.accept(this.commands.getOrDefault(message.getText(), new UnknownCommandAction()));
+            return new RawInput(null, false);
+        } else if (update.hasCallbackQuery()) {
+            Pair<UserCommand, String> userCommandStringPair = UpdateObjectWrapperUtils.parseCallbackData(update);
+            commandAction.accept(this.commands.getOrDefault(userCommandStringPair.getFirst().getCommand(), new UnknownCommandAction()));
             return new RawInput(null, false);
         } else {
             return new RawInput(userInputHandler, true);

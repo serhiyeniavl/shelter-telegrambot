@@ -1,7 +1,14 @@
 package com.wgc.shelter.action.model;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public enum UserCommand {
-    START("/start"), CREATE("/create"), DESTROY("/destroy");
+    START("/start"),
+    CREATE("/create"),
+    DESTROY("/destroy"),
+    INPUT("/input_players_quantity"),
+    LEAVE("/leave");
 
     public String getCommand() {
         return command;
@@ -11,5 +18,12 @@ public enum UserCommand {
 
     UserCommand(String s) {
         this.command = s;
+    }
+
+    public static UserCommand fromValue(String command) {
+        return Arrays.stream(values())
+                .filter(c -> Objects.equals(c.getCommand(), command))
+                .findFirst()
+                .orElseThrow();
     }
 }
