@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.util.Collections;
 
@@ -26,7 +27,8 @@ public class UpdateBotMessageSetup {
     User user;
     SendMessage messageToSend;
 
-    public static UpdateBotMessageSetup buildUpdateObject(Long id, String firstName, String languageCode, String command, String messageText) {
+    public static UpdateBotMessageSetup buildUpdateObject(Long id, String firstName, String languageCode, String command, String messageText,
+                                                          InlineKeyboardMarkup replyMarkup) {
         User user = new User(id, firstName, false);
         user.setLanguageCode(languageCode);
 
@@ -44,6 +46,7 @@ public class UpdateBotMessageSetup {
         SendMessage messageToSend = SendMessage.builder()
                 .chatId(String.valueOf(update.getMessage().getChatId()))
                 .text(messageText)
+                .replyMarkup(replyMarkup)
                 .build();
 
         return new UpdateBotMessageSetup(update, message, user, messageToSend);
