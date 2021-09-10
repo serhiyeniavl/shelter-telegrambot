@@ -30,9 +30,9 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
     @DisplayName("User successfully created room")
     void onUpdateReceived() throws TelegramApiException {
         long telegramUserId = 100L;
-        saveUser(telegramUserId, UserActionState.NEW_USER, "en_US");
+        saveUser(telegramUserId, UserActionState.NEW_USER, EN_US.toString());
 
-        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", "en-US",
+        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
                 UserCommand.CREATE.getCommand(), "input participants quantity", null);
         Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(botMessageSetup.messageToSend());
 
@@ -42,7 +42,7 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
         Room actualRoom = roomRepository.findByOwnerId(telegramUserId).get();
         Assertions.assertAll(
                 () -> Assertions.assertEquals(
-                        User.builder().telegramUserId(telegramUserId).state(UserActionState.CREATE_ROOM).locale("en_US").build(),
+                        User.builder().telegramUserId(telegramUserId).state(UserActionState.CREATE_ROOM).locale(EN_US.toString()).build(),
                         actualUser),
 
                 () -> Assertions.assertNotNull(actualRoom.getLastActionDate()),
@@ -61,9 +61,9 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
     @DisplayName("Failed attempt to create room - bot request fail - rollback transaction")
     void onUpdateReceivedBotRequestFailed() throws TelegramApiException {
         long telegramUserId = 100L;
-        User initialUser = saveUser(telegramUserId, UserActionState.NEW_USER, "en_US");
+        User initialUser = saveUser(telegramUserId, UserActionState.NEW_USER, EN_US.toString());
 
-        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", "en-US",
+        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
                 UserCommand.CREATE.getCommand(), "input participants quantity", null);
         Mockito.doThrow(new RuntimeException()).when(telegramLongPollingController).execute(botMessageSetup.messageToSend());
 
@@ -79,13 +79,13 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
     @DisplayName("User already has a room")
     void onUpdateReceivedUserHasRoom() throws TelegramApiException {
         long telegramUserId = 100L;
-        User expectedUser = saveUser(telegramUserId, UserActionState.CREATE_ROOM, "en-US");
+        User expectedUser = saveUser(telegramUserId, UserActionState.CREATE_ROOM, EN_US.toString());
         Room expectedRoom = saveRoom(telegramUserId, Set.of(telegramUserId), 4, RoomState.NEW, LocalDateTime.now());
 
         InlineKeyboardButton buttonYes = KeyboardFactory.createInlineKeyboardButton("Yes", UserCommand.DESTROY.getCommand() + " " + telegramUserId);
         InlineKeyboardButton buttonNo = KeyboardFactory.createInlineKeyboardButton("No", UserCommand.INPUT.getCommand());
 
-        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", "en-US",
+        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
                 UserCommand.CREATE.getCommand(), "already created, waiting to set up players quantity. wanna end this session?",
                 new InlineKeyboardMarkup(List.of(List.of(buttonYes, buttonNo))));
         Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(botMessageSetup.messageToSend());
@@ -105,12 +105,12 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
     @DisplayName("User is in action session with owned room")
     void onUpdateReceivedUserHasActiveSessionWithOwnedRoom() throws TelegramApiException {
         long telegramUserId = 100L;
-        User expectedUser = saveUser(telegramUserId, UserActionState.WAITING_OTHERS_TO_JOIN, "en_US");
+        User expectedUser = saveUser(telegramUserId, UserActionState.WAITING_OTHERS_TO_JOIN, EN_US.toString());
         Room expectedRoom = saveRoom(telegramUserId, Set.of(telegramUserId), 4, RoomState.NEW, LocalDateTime.now());
 
         InlineKeyboardButton destroyButton = KeyboardFactory.createInlineKeyboardButton("Yes", UserCommand.DESTROY.getCommand() + " " + telegramUserId);
 
-        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", "en-US",
+        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
                 UserCommand.CREATE.getCommand(), "u have active session. wish to leave? (if u room owner it will be erased)",
                 new InlineKeyboardMarkup(List.of(List.of(destroyButton))));
         Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(botMessageSetup.messageToSend());

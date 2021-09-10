@@ -11,19 +11,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.MessageSource;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Set;
 
 @SpringBootTest
 @ActiveProfiles("test")
 public abstract class BaseSpringBootTestClass {
 
+    public static final Locale EN_US = new Locale("en_US");
+
     @Autowired
     protected UserRepository userRepository;
     @Autowired
     protected RoomRepository roomRepository;
+    @Autowired
+    protected MessageSource messageSource;
 
     @SpyBean
     protected TelegramLongPollingController telegramLongPollingController;

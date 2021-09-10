@@ -58,7 +58,7 @@ public class DestroyCommandAction implements CommandAction {
 
     private Long getTelegramUserId(Update update) {
         if (update.hasCallbackQuery()) {
-            return Long.valueOf(UpdateObjectWrapperUtils.parseCallbackData(update).getSecond());
+            return Long.valueOf(UpdateObjectWrapperUtils.parseCallbackData(update).value());
         } else {
             return update.getMessage().getFrom().getId();
         }

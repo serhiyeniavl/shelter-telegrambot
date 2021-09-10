@@ -8,7 +8,8 @@ public enum MessageCode {
     ANSWER_NO("answer.no"),
     CANT_CREATE_ROOM_WISH_TO_LEAVE("cant.create.room.wish.to.leave"),
     ROOM_SUCCESSFULLY_DELETED("room.deleted"),
-    USER_DOESNT_HAVE_ROOM("user.doesnt.have.room");
+    USER_DOESNT_HAVE_ROOM("user.doesnt.have.room"),
+    INPUT_ROOM_NUMBER("input.room.number");
 
     public String getCode() {
         return messageBundleCode;

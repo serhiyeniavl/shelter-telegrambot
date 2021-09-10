@@ -38,8 +38,8 @@ public class UserInputResolver {
             commandAction.accept(this.commands.getOrDefault(message.getText(), new UnknownCommandAction()));
             return new RawInput(null, false);
         } else if (update.hasCallbackQuery()) {
-            Pair<UserCommand, String> userCommandStringPair = UpdateObjectWrapperUtils.parseCallbackData(update);
-            commandAction.accept(this.commands.getOrDefault(userCommandStringPair.getFirst().getCommand(), new UnknownCommandAction()));
+            UpdateObjectWrapperUtils.UserCallbackData userCallbackData = UpdateObjectWrapperUtils.parseCallbackData(update);
+            commandAction.accept(this.commands.getOrDefault(userCallbackData.userCommand().getCommand(), new UnknownCommandAction()));
             return new RawInput(null, false);
         } else {
             return new RawInput(userInputHandler, true);

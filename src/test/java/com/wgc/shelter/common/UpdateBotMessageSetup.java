@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.EntityType;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -37,7 +38,7 @@ public class UpdateBotMessageSetup {
         message.setFrom(user);
         message.setText(command);
         message.setEntities(Collections.singletonList(new MessageEntity(EntityType.BOTCOMMAND, 0, 15)));
-        message.setChat(new Chat(1L, "private"));
+        message.setChat(new Chat(id, "private"));
 
         Update update = new Update();
         update.setUpdateId(1);
