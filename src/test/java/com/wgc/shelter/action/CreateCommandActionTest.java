@@ -102,7 +102,7 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
     }
 
     @Test
-    @DisplayName("User is in action session with owned room")
+    @DisplayName("User is in active session with owned room")
     void onUpdateReceivedUserHasActiveSessionWithOwnedRoom() throws TelegramApiException {
         long telegramUserId = 100L;
         User expectedUser = saveUser(telegramUserId, UserActionState.WAITING_OTHERS_TO_JOIN, EN_US.toString());

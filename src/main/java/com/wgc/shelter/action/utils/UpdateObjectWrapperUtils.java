@@ -14,7 +14,11 @@ public class UpdateObjectWrapperUtils {
 
 
     public @NonNull Long getUserTelegramId(Update update) {
-        return update.getMessage().getFrom().getId();
+        if (update.hasCallbackQuery()) {
+            return Long.valueOf(UpdateObjectWrapperUtils.parseCallbackData(update).value());
+        } else {
+            return update.getMessage().getFrom().getId();
+        }
     }
 
     public static String getChaId(Update update) {

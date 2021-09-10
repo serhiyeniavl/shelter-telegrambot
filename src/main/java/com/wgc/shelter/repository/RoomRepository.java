@@ -9,5 +9,7 @@ public interface RoomRepository extends MongoRepository<Room, Long> {
 
     Optional<Room> findByOwnerId(Long ownerId);
 
+    Optional<Room> findByPlayersContains(Long player);
+
     void deleteByOwnerId(Long ownerId);
 }

@@ -20,7 +20,7 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
-    public void createRoom(Room room) {
+    public void save(Room room) {
         roomRepository.save(room);
     }
 
@@ -33,6 +33,11 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Optional<Room> findRoom(Long userTelegramId) {
         return roomRepository.findByOwnerId(userTelegramId);
+    }
+
+    @Override
+    public Optional<Room> findRoomByParticipant(Long participantId) {
+        return roomRepository.findByPlayersContains(participantId);
     }
 
     @Override

@@ -1,12 +1,11 @@
 package com.wgc.shelter.action.impl;
 
-import com.wgc.shelter.action.CommandAction;
+import com.wgc.shelter.action.AbstractCommandAction;
 import com.wgc.shelter.action.annotation.Action;
 import com.wgc.shelter.action.factory.KeyboardFactory;
 import com.wgc.shelter.action.message.MessageCode;
 import com.wgc.shelter.action.model.UserCommand;
 import com.wgc.shelter.action.utils.TelegramApiExecutorWrapper;
-import com.wgc.shelter.action.utils.UpdateObjectWrapperUtils;
 import com.wgc.shelter.model.Room;
 import com.wgc.shelter.model.RoomState;
 import com.wgc.shelter.model.User;
@@ -14,8 +13,8 @@ import com.wgc.shelter.model.UserActionState;
 import com.wgc.shelter.service.RoomService;
 import com.wgc.shelter.service.UserService;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -31,51 +30,40 @@ import java.util.Locale;
 import java.util.Objects;
 
 @Action
-@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class CreateCommandAction implements CommandAction {
+public class CreateCommandAction extends AbstractCommandAction {
 
     private static final Integer ROOM_MINIMUM_PLAYERS_QUANTITY = 4;
 
-    UserService userService;
-    RoomService roomService;
-    MessageSource messageSource;
+    @Autowired
+    public CreateCommandAction(UserService userService, RoomService roomService, MessageSource messageSource) {
+        super(userService, roomService, messageSource);
+    }
 
     @Override
     @Transactional
     public void handleCommand(TelegramLongPollingBot executor, Update update) {
-        SendMessage messageToSend = SendMessage.builder()
-                .chatId(UpdateObjectWrapperUtils.getChaId(update))
-                .text("")
-                .build();
-        Long userTelegramId = UpdateObjectWrapperUtils.getUserTelegramId(update);
-        User user = userService.retrieveExistingUser(userTelegramId);
+        SendMessage messageToSend = createEmptySendMessageForUserChat(update);
+        User user = getExistingUser(update);
         Locale locale = new Locale(user.getLocale());
         UserActionState userState = user.getState();
         if (Objects.equals(userState, UserActionState.NEW_USER)) {
-            createNewRoom(messageToSend, userTelegramId, user, locale);
+            createNewRoom(messageToSend, user.getTelegramUserId(), user, locale);
         } else if (Objects.equals(userState, UserActionState.CREATE_ROOM)) {
-            sendRoomAlreadyCreated(messageToSend, locale, userTelegramId);
+            sendRoomAlreadyCreated(messageToSend, locale, user.getTelegramUserId());
         } else {
-            sendCantCreateRoomWithActiveSession(messageToSend, userTelegramId, locale);
+            sendCantCreateRoomWithActiveSession(messageToSend, user, locale);
         }
         TelegramApiExecutorWrapper.execute(executor, messageToSend);
     }
 
-    private void sendCantCreateRoomWithActiveSession(SendMessage messageToSend, Long userTelegramId, Locale locale) {
-        String command = roomService.findRoom(userTelegramId)
-                .map(room -> UserCommand.DESTROY.getCommand().concat(" " + userTelegramId))
-                .orElseGet(UserCommand.LEAVE::getCommand);
-
-        InlineKeyboardButton leaveOrDestroyApproveButton = KeyboardFactory.createInlineKeyboardButton(
-                messageSource.getMessage(MessageCode.ANSWER_YES.getCode(), null, locale), command);
-
-        messageToSend.setReplyMarkup(new InlineKeyboardMarkup(List.of(List.of(leaveOrDestroyApproveButton))));
-        messageToSend.setText(messageSource.getMessage(MessageCode.CANT_CREATE_ROOM_WISH_TO_LEAVE.getCode(), null, locale));
+    private void sendCantCreateRoomWithActiveSession(SendMessage messageToSend, User user, Locale locale) {
+        messageToSend.setReplyMarkup(new InlineKeyboardMarkup(List.of(List.of(createLeaveOrDestroyButton(user)))));
+        messageToSend.setText(messageSource.getMessage(MessageCode.CANT_DO_ACTION_WISH_TO_LEAVE.getCode(), null, locale));
     }
 
     private void createNewRoom(SendMessage messageToSend, Long userTelegramId, User user, Locale locale) {
-        roomService.createRoom(Room.builder()
+        roomService.save(Room.builder()
                 .ownerId(userTelegramId)
                 .state(RoomState.NEW)
                 .lastActionDate(LocalDateTime.now())

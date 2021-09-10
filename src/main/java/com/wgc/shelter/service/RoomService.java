@@ -9,11 +9,13 @@ import java.util.Optional;
 @Transactional(propagation = Propagation.SUPPORTS)
 public interface RoomService {
 
-    void createRoom(Room room);
+    void save(Room room);
 
     Room retrieveExistingRoom(Long userTelegramId);
 
     Optional<Room> findRoom(Long userTelegramId);
+
+    Optional<Room> findRoomByParticipant(Long participantId);
 
     void deleteRoom(Long ownerId);
 }

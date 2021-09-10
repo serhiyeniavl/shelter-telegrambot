@@ -72,7 +72,7 @@ class DestroyCommandActionTest extends BaseSpringBootTestClass {
         UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
                 UserCommand.DESTROY.getCommand(), messageSource.getMessage(MessageCode.ROOM_SUCCESSFULLY_DELETED.getCode(), null, EN_US), null);
         Message message = new Message();
-        message.setText(messageSource.getMessage(MessageCode.CANT_CREATE_ROOM_WISH_TO_LEAVE.getCode(), null, EN_US));
+        message.setText(messageSource.getMessage(MessageCode.CANT_DO_ACTION_WISH_TO_LEAVE.getCode(), null, EN_US));
         botMessageSetup.update().setMessage(null);
         CallbackQuery callbackQuery = new CallbackQuery("callbackQuery", botMessageSetup.user(), message,
                 null, UserCommand.DESTROY.getCommand() + " " + telegramUserId, null, null);

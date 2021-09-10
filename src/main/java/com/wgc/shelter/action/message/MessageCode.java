@@ -6,10 +6,12 @@ public enum MessageCode {
     ALREADY_CREATED("already.created"),
     ANSWER_YES("answer.yes"),
     ANSWER_NO("answer.no"),
-    CANT_CREATE_ROOM_WISH_TO_LEAVE("cant.create.room.wish.to.leave"),
+    CANT_DO_ACTION_WISH_TO_LEAVE("cant.do.action.wish.to.leave"),
     ROOM_SUCCESSFULLY_DELETED("room.deleted"),
     USER_DOESNT_HAVE_ROOM("user.doesnt.have.room"),
-    INPUT_ROOM_NUMBER("input.room.number");
+    INPUT_ROOM_NUMBER("input.room.number"),
+    ROOM_LEFT("room.left"),
+    NO_ACTIVE_ROOM("room.no.active");
 
     public String getCode() {
         return messageBundleCode;
