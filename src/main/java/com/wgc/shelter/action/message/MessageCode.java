@@ -9,6 +9,7 @@ public enum MessageCode {
     CANT_DO_ACTION_WISH_TO_LEAVE("cant.do.action.wish.to.leave"),
     ROOM_SUCCESSFULLY_DELETED("room.deleted"),
     USER_DOESNT_HAVE_ROOM("user.doesnt.have.room"),
+    CANT_LEAVE_WISH_TO_DELETE("cant.leave.room.wish.to.delete"),
     INPUT_ROOM_NUMBER("input.room.number"),
     ROOM_LEFT("room.left"),
     NO_ACTIVE_ROOM("room.no.active");

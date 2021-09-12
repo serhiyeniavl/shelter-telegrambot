@@ -49,7 +49,7 @@ class JoinCommandActionTest extends BaseSpringBootTestClass {
 
         User expected = saveUser(telegramUserId, UserActionState.WAITING_OTHERS_TO_JOIN, EN_US.toString());
 
-        InlineKeyboardButton leaveButton = KeyboardFactory.createInlineKeyboardButton("Yes", UserCommand.LEAVE.getCommand());
+        InlineKeyboardButton leaveButton = KeyboardFactory.createInlineKeyboardButton("Confirm", UserCommand.LEAVE.getCommand());
 
         UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
                 UserCommand.JOIN.getCommand(), messageSource.getMessage(MessageCode.CANT_DO_ACTION_WISH_TO_LEAVE.getCode(), null, EN_US),
