@@ -33,9 +33,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addNewUser(Long telegramUserId, Locale locale) {
+    public User addNewUser(Long telegramUserId, String chaId, Locale locale) {
         return userRepository.save(User.builder()
                 .telegramUserId(telegramUserId)
+                .chatId(chaId)
                 .state(UserActionState.NEW_USER)
                 .locale(locale.toString())
                 .build());

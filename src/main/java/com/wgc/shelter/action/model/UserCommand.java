@@ -9,7 +9,8 @@ public enum UserCommand {
     DESTROY("/destroy"),
     INPUT("/input_players_quantity"),
     LEAVE("/leave"),
-    JOIN("/join");
+    JOIN("/join"),
+    START_GAME("/start_game");
 
     public String getCommand() {
         return command;

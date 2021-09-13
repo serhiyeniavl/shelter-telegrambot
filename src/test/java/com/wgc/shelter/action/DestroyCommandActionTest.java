@@ -75,7 +75,7 @@ class DestroyCommandActionTest extends BaseSpringBootTestClass {
         message.setText(messageSource.getMessage(MessageCode.CANT_DO_ACTION_WISH_TO_LEAVE.getCode(), null, EN_US));
         botMessageSetup.update().setMessage(null);
         CallbackQuery callbackQuery = new CallbackQuery("callbackQuery", botMessageSetup.user(), message,
-                null, UserCommand.DESTROY.getCommand() + " " + telegramUserId, null, null);
+                null, UserCommand.DESTROY.getCommand(), null, null);
         botMessageSetup.update().setCallbackQuery(callbackQuery);
 
         Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(botMessageSetup.messageToSend());

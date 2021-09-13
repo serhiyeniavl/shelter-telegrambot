@@ -13,34 +13,31 @@ import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 @Action
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class JoinCommandAction extends AbstractCommandAction {
+public class InputPlayersQuantityCommandAction extends AbstractCommandAction {
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public void handleCommand(TelegramLongPollingBot executor, Update update) {
         SendMessage messageToSend = createEmptySendMessageForUserChat(update);
         User user = getExistingUser(update);
         Locale locale = new Locale(user.getLocale());
-        if (List.of(UserActionState.NEW_USER, UserActionState.JOINING_ROOM).contains(user.getState())) {
-            userService.save(user.setState(UserActionState.JOINING_ROOM));
-            messageToSend.setText(messageSource.getMessage(MessageCode.INPUT_ROOM_NUMBER.getCode(), null, locale));
-        } else {
-            messageToSend.setReplyMarkup(new InlineKeyboardMarkup(List.of(List.of(createLeaveOrDestroyButton(user)))));
-            messageToSend.setText(messageSource.getMessage(MessageCode.CANT_DO_ACTION_WISH_TO_LEAVE.getCode(), null, locale));
+        UserActionState userState = user.getState();
+        if (Objects.equals(userState, UserActionState.CREATE_ROOM)) {
+            messageToSend.setText(messageSource.getMessage(MessageCode.INPUT_ROOM_PARTICIPANTS_QUANTITY.getCode(),
+                    null, locale));
+            TelegramApiExecutorWrapper.execute(executor, messageToSend);
         }
-        TelegramApiExecutorWrapper.execute(executor, messageToSend);
     }
 
     @Override
     public UserCommand commandType() {
-        return UserCommand.JOIN;
+        return UserCommand.INPUT;
     }
 }

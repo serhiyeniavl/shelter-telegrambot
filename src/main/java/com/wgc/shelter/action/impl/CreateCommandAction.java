@@ -10,12 +10,8 @@ import com.wgc.shelter.model.Room;
 import com.wgc.shelter.model.RoomState;
 import com.wgc.shelter.model.User;
 import com.wgc.shelter.model.UserActionState;
-import com.wgc.shelter.service.RoomService;
-import com.wgc.shelter.service.UserService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -35,10 +31,6 @@ public class CreateCommandAction extends AbstractCommandAction {
 
     private static final Integer ROOM_MINIMUM_PLAYERS_QUANTITY = 4;
 
-    @Autowired
-    public CreateCommandAction(UserService userService, RoomService roomService, MessageSource messageSource) {
-        super(userService, roomService, messageSource);
-    }
 
     @Override
     @Transactional
@@ -50,7 +42,7 @@ public class CreateCommandAction extends AbstractCommandAction {
         if (Objects.equals(userState, UserActionState.NEW_USER)) {
             createNewRoom(messageToSend, user.getTelegramUserId(), user, locale);
         } else if (Objects.equals(userState, UserActionState.CREATE_ROOM)) {
-            sendRoomAlreadyCreated(messageToSend, locale, user.getTelegramUserId());
+            sendRoomAlreadyCreated(messageToSend, locale);
         } else {
             sendCantCreateRoomWithActiveSession(messageToSend, user, locale);
         }
@@ -76,9 +68,9 @@ public class CreateCommandAction extends AbstractCommandAction {
                 null, locale));
     }
 
-    private void sendRoomAlreadyCreated(SendMessage messageToSend, Locale locale, Long userTelegramId) {
+    private void sendRoomAlreadyCreated(SendMessage messageToSend, Locale locale) {
         InlineKeyboardButton buttonYes = KeyboardFactory.createInlineKeyboardButton(
-                messageSource.getMessage(MessageCode.ANSWER_YES.getCode(), null, locale), UserCommand.DESTROY.getCommand() + " " + userTelegramId);
+                messageSource.getMessage(MessageCode.ANSWER_YES.getCode(), null, locale), UserCommand.DESTROY.getCommand());
         InlineKeyboardButton buttonNo = KeyboardFactory.createInlineKeyboardButton(
                 messageSource.getMessage(MessageCode.ANSWER_NO.getCode(), null, locale), UserCommand.INPUT.getCommand());
 

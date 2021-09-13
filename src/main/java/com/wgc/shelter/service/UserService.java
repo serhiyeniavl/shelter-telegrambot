@@ -15,7 +15,7 @@ public interface UserService {
     User retrieveExistingUser(Long telegramUserId);
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    User addNewUser(Long telegramUserId, Locale locale);
+    User addNewUser(Long telegramUserId, String chaId, Locale locale);
 
     @Transactional(propagation = Propagation.SUPPORTS)
     User save(User user);

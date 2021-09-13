@@ -15,6 +15,8 @@ public interface RoomService {
 
     Optional<Room> findRoom(Long userTelegramId);
 
+    Optional<Room> findNonStartedRoom(Long userTelegramId);
+
     Optional<Room> findRoomByParticipant(Long participantId);
 
     void deleteRoom(Long ownerId);

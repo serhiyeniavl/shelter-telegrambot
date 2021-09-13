@@ -6,12 +6,8 @@ import com.wgc.shelter.action.message.MessageCode;
 import com.wgc.shelter.action.model.UserCommand;
 import com.wgc.shelter.action.utils.TelegramApiExecutorWrapper;
 import com.wgc.shelter.action.utils.UpdateObjectWrapperUtils;
-import com.wgc.shelter.service.RoomService;
-import com.wgc.shelter.service.UserService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -24,10 +20,6 @@ import java.util.Locale;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class StartCommandAction extends AbstractCommandAction {
 
-    @Autowired
-    public StartCommandAction(UserService userService, RoomService roomService, MessageSource messageSource) {
-        super(userService, roomService, messageSource);
-    }
 
     @Override
     @Transactional
@@ -36,7 +28,7 @@ public class StartCommandAction extends AbstractCommandAction {
         Long telegramUserId = UpdateObjectWrapperUtils.getUserTelegramId(update);
         if (userService.findByTelegramUserId(telegramUserId).isEmpty()) {
             Locale locale = Locale.forLanguageTag(message.getFrom().getLanguageCode());
-            userService.addNewUser(telegramUserId, locale);
+            userService.addNewUser(telegramUserId, UpdateObjectWrapperUtils.getChaId(update), locale);
             var messageToSend = SendMessage.builder()
                     .chatId(UpdateObjectWrapperUtils.getChaId(update))
                     .text(messageSource.getMessage(MessageCode.HELLO.getCode(), null, locale))

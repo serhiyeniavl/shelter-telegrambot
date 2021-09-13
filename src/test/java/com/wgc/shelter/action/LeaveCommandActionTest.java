@@ -82,7 +82,7 @@ class LeaveCommandActionTest extends BaseSpringBootTestClass {
         User expectedUser = saveUser(telegramUserId, UserActionState.WAITING_OTHERS_TO_JOIN, EN_US.toString());
         Room expectedRoom = saveRoom(telegramUserId, Set.of(106L, 102L, 103L, 104L, telegramUserId), 5, RoomState.WAITING_TO_JOIN, null);
 
-        InlineKeyboardButton destroyButton = KeyboardFactory.createInlineKeyboardButton("Confirm", UserCommand.DESTROY.getCommand() + " " + telegramUserId);
+        InlineKeyboardButton destroyButton = KeyboardFactory.createInlineKeyboardButton("Confirm", UserCommand.DESTROY.getCommand());
 
         UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
                 UserCommand.LEAVE.getCommand(), messageSource.getMessage(MessageCode.CANT_LEAVE_WISH_TO_DELETE.getCode(), null, EN_US),

@@ -1,6 +1,7 @@
 package com.wgc.shelter.service.impl;
 
 import com.wgc.shelter.model.Room;
+import com.wgc.shelter.model.RoomState;
 import com.wgc.shelter.repository.RoomRepository;
 import com.wgc.shelter.service.RoomService;
 import com.wgc.shelter.service.exception.ShelterBotException;
@@ -33,6 +34,11 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Optional<Room> findRoom(Long userTelegramId) {
         return roomRepository.findByOwnerId(userTelegramId);
+    }
+
+    @Override
+    public Optional<Room> findNonStartedRoom(Long userTelegramId) {
+        return roomRepository.findByOwnerIdAndStateNot(userTelegramId, RoomState.STARTED);
     }
 
     @Override

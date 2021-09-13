@@ -22,6 +22,8 @@ public class User {
     @Id
     Long telegramUserId;
 
+    String chatId;
+
     UserActionState state;
 
     String locale;

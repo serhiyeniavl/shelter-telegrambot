@@ -15,7 +15,7 @@ public class UpdateObjectWrapperUtils {
 
     public @NonNull Long getUserTelegramId(Update update) {
         if (update.hasCallbackQuery()) {
-            return Long.valueOf(UpdateObjectWrapperUtils.parseCallbackData(update).value());
+            return update.getCallbackQuery().getFrom().getId();
         } else {
             return update.getMessage().getFrom().getId();
         }
@@ -42,7 +42,13 @@ public class UpdateObjectWrapperUtils {
         Optional.ofNullable(update.getCallbackQuery()).ifPresent(callbackQuery ->
                 updateString.append("CallbackQuery=").append(callbackQuery.getData()).append(';')
                         .append("CallbackMessageText=").append(callbackQuery.getMessage().getText())
-                        .appendNewLine());
+                        .appendNewLine()
+                        .append("UserId=").append(callbackQuery.getFrom().getId()).append(';')
+                        .append("FirstName=").append(callbackQuery.getFrom().getFirstName()).append(';')
+                        .append("LangCode=").append(callbackQuery.getFrom().getLanguageCode()).append(';')
+                        .append("UserName=").append(callbackQuery.getFrom().getUserName()).append(';')
+
+        );
         return updateString;
     }
 

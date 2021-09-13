@@ -10,6 +10,7 @@ import com.wgc.shelter.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -18,18 +19,27 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.Locale;
 
-@RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
+@FieldDefaults( level = AccessLevel.PROTECTED)
 public abstract class AbstractCommandAction implements CommandAction {
 
+    @Autowired
     UserService userService;
+    @Autowired
     RoomService roomService;
 
+    @Autowired
     MessageSource messageSource;
 
     protected SendMessage createEmptySendMessageForUserChat(Update update) {
         return SendMessage.builder()
                 .chatId(UpdateObjectWrapperUtils.getChaId(update))
+                .text("")
+                .build();
+    }
+
+    protected SendMessage createEmptySendMessageForUserChat(String chatId) {
+        return SendMessage.builder()
+                .chatId(chatId)
                 .text("")
                 .build();
     }
@@ -45,7 +55,7 @@ public abstract class AbstractCommandAction implements CommandAction {
 
     protected InlineKeyboardButton createLeaveOrDestroyButton(User user) {
         String command = roomService.findRoom(user.getTelegramUserId())
-                .map(room -> UserCommand.DESTROY.getCommand().concat(" " + user.getTelegramUserId()))
+                .map(room -> UserCommand.DESTROY.getCommand())
                 .orElseGet(UserCommand.LEAVE::getCommand);
 
         return KeyboardFactory.createInlineKeyboardButton(

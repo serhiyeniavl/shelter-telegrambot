@@ -83,7 +83,7 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
         User expectedUser = saveUser(telegramUserId, UserActionState.CREATE_ROOM, EN_US.toString());
         Room expectedRoom = saveRoom(telegramUserId, Set.of(telegramUserId), 4, RoomState.NEW, LocalDateTime.now());
 
-        InlineKeyboardButton buttonYes = KeyboardFactory.createInlineKeyboardButton("Confirm", UserCommand.DESTROY.getCommand() + " " + telegramUserId);
+        InlineKeyboardButton buttonYes = KeyboardFactory.createInlineKeyboardButton("Confirm", UserCommand.DESTROY.getCommand());
         InlineKeyboardButton buttonNo = KeyboardFactory.createInlineKeyboardButton("Decline", UserCommand.INPUT.getCommand());
 
         UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
@@ -109,7 +109,7 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
         User expectedUser = saveUser(telegramUserId, UserActionState.WAITING_OTHERS_TO_JOIN, EN_US.toString());
         Room expectedRoom = saveRoom(telegramUserId, Set.of(telegramUserId), 4, RoomState.NEW, LocalDateTime.now());
 
-        InlineKeyboardButton destroyButton = KeyboardFactory.createInlineKeyboardButton("Confirm", UserCommand.DESTROY.getCommand() + " " + telegramUserId);
+        InlineKeyboardButton destroyButton = KeyboardFactory.createInlineKeyboardButton("Confirm", UserCommand.DESTROY.getCommand());
 
         UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
                 UserCommand.CREATE.getCommand(), messageSource.getMessage(MessageCode.CANT_DO_ACTION_WISH_TO_LEAVE.getCode(), null, EN_US),
