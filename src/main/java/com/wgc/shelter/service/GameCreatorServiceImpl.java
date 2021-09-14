@@ -4,14 +4,16 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class GameCreatorServiceImpl implements GameCreatorService {
+
     @Override
-    public List<String> createGame(Integer playersQuantity, Locale locale) {
+    public Map<Long, String> createGame(Set<Long> players, Locale locale) {
         return null;
     }
 }

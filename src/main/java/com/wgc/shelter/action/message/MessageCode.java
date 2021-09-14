@@ -12,7 +12,9 @@ public enum MessageCode {
     CANT_LEAVE_WISH_TO_DELETE("cant.leave.room.wish.to.delete"),
     INPUT_ROOM_NUMBER("input.room.number"),
     ROOM_LEFT("room.left"),
-    NO_ACTIVE_ROOM("room.no.active");
+    NO_ACTIVE_ROOM("room.no.active"),
+    WAIT_TO_JOIN_ALL_PLAYERS("wait.for.all.to.join"),
+    START_ANYWAY("start.anyway");
 
     public String getCode() {
         return messageBundleCode;

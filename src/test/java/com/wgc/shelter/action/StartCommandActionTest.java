@@ -3,6 +3,7 @@ package com.wgc.shelter.action;
 import com.wgc.shelter.action.model.UserCommand;
 import com.wgc.shelter.common.BaseSpringBootTestClass;
 import com.wgc.shelter.common.UpdateBotMessageSetup;
+import com.wgc.shelter.model.User;
 import com.wgc.shelter.model.UserActionState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -26,10 +27,14 @@ class StartCommandActionTest extends BaseSpringBootTestClass {
 
         Assertions.assertDoesNotThrow(() -> telegramLongPollingController.onUpdateReceived(botMessageSetup.update()));
 
-        com.wgc.shelter.model.User actual = userRepository.findByTelegramUserId(telegramUserId).get();
-        Assertions.assertEquals(
-                com.wgc.shelter.model.User.builder().telegramUserId(telegramUserId).state(UserActionState.NEW_USER).locale("en_US").build(),
-                actual);
+        User expected = User.builder()
+                .telegramUserId(telegramUserId)
+                .state(UserActionState.NEW_USER)
+                .locale("en_US")
+                .chatId(String.valueOf(telegramUserId)).build();
+        User actual = userRepository.findByTelegramUserId(telegramUserId).get();
+
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test

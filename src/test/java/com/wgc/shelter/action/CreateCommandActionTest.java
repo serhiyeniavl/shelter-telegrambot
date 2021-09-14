@@ -39,12 +39,15 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
 
         Assertions.assertDoesNotThrow(() -> telegramLongPollingController.onUpdateReceived(botMessageSetup.update()));
 
+        User expectedUser = User.builder()
+                .telegramUserId(telegramUserId)
+                .state(UserActionState.CREATE_ROOM)
+                .locale(EN_US.toString())
+                .chatId(String.valueOf(telegramUserId)).build();
         User actualUser = userRepository.findByTelegramUserId(telegramUserId).get();
         Room actualRoom = roomRepository.findByOwnerId(telegramUserId).get();
         Assertions.assertAll(
-                () -> Assertions.assertEquals(
-                        User.builder().telegramUserId(telegramUserId).state(UserActionState.CREATE_ROOM).locale(EN_US.toString()).build(),
-                        actualUser),
+                () -> Assertions.assertEquals(expectedUser, actualUser),
 
                 () -> Assertions.assertNotNull(actualRoom.getLastActionDate()),
                 () -> Assertions.assertNotNull(actualRoom.getId()),

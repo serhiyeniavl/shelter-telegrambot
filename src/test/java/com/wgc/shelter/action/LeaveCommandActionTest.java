@@ -75,7 +75,7 @@ class LeaveCommandActionTest extends BaseSpringBootTestClass {
     }
 
     @Test
-    @DisplayName("User is room holder should confirm leaving (destroy)")
+    @DisplayName("User is room holder so should confirm leaving (destroy)")
     void leaveOwnedRoom() throws TelegramApiException {
         long telegramUserId = 100L;
 

@@ -44,6 +44,7 @@ public abstract class BaseSpringBootTestClass {
     protected User saveUser(Long telegramUserId, UserActionState state, String locale) {
         return userRepository.save(User.builder()
                 .telegramUserId(telegramUserId)
+                .chatId(String.valueOf(telegramUserId))
                 .state(state)
                 .locale(locale)
                 .build());
