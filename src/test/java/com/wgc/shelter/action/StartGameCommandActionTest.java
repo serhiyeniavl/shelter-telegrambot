@@ -167,4 +167,51 @@ class StartGameCommandActionTest extends BaseSpringBootTestClass {
         );
     }
 
+    @Test
+    @DisplayName("User doesnt have a room")
+    void userDoesntHaveRoomTest() throws TelegramApiException {
+        Long telegramUserId = 100L;
+        int expectedRoomPlayers = 5;
+
+        User initialOwner = saveUser(telegramUserId, UserActionState.WAITING_OTHERS_TO_JOIN, EN_US.toString());
+        Room initialRoom = saveRoom(telegramUserId + 1, Set.of(telegramUserId + 1), expectedRoomPlayers, RoomState.WAITING_TO_JOIN, LocalDateTime.now());
+
+        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(initialOwner.getTelegramUserId(), "user", EN_US.toString(),
+                UserCommand.START_GAME.getCommand(), messageSource.getMessage(MessageCode.NON_STARTED_ROOM_NOT_FOUND.getCode(), null, EN_US), null);
+
+        Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(botMessageSetup.messageToSend());
+
+        Assertions.assertDoesNotThrow(() -> telegramLongPollingController.onUpdateReceived(botMessageSetup.update()));
+
+        User actualOwner = userRepository.findByTelegramUserId(initialOwner.getTelegramUserId()).get();
+        Room actualRoom = roomRepository.findByOwnerId(initialOwner.getTelegramUserId() + 1).get();
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(initialOwner, actualOwner),
+
+                () -> Assertions.assertEquals(initialRoom.setLastActionDate(null), actualRoom.setLastActionDate(null))
+        );
+    }
+
+
+    @Test
+    @DisplayName("User input /start_game with wrong status")
+    void userHasWrongStatusTest() throws TelegramApiException {
+        Long telegramUserId = 100L;
+
+        User initialOwner = saveUser(telegramUserId, UserActionState.NEW_USER, EN_US.toString());
+
+        UpdateBotMessageSetup botMessageSetup = buildUpdateObject(initialOwner.getTelegramUserId(), "user", EN_US.toString(),
+                UserCommand.START_GAME.getCommand(), messageSource.getMessage(MessageCode.CANT_DO_ACTION_RIGHT_NOW_SEE_HELP.getCode(), null, EN_US), null);
+
+        Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(botMessageSetup.messageToSend());
+
+        Assertions.assertDoesNotThrow(() -> telegramLongPollingController.onUpdateReceived(botMessageSetup.update()));
+
+        User actualOwner = userRepository.findByTelegramUserId(initialOwner.getTelegramUserId()).get();
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(initialOwner, actualOwner));
+    }
+
 }

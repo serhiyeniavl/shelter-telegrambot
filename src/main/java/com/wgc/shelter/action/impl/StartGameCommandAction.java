@@ -48,19 +48,19 @@ public class StartGameCommandAction extends AbstractCommandAction {
                     .map(room -> room.getPlayersQuantity() <= room.getPlayers().size()
                             ? generateGame(executor, locale, room)
                             : waitForAllOrStartAnywayIfEnough(messageToSend, locale, room))
-                    .orElseGet(() -> {
-//started or not found
-                        return false;
-                    });
-//            messageToSend.setText(messageSource.getMessage(MessageCode.INPUT_ROOM_NUMBER.getCode(), null, locale));
+                    .orElseGet(() -> notFoundOrAlreadyStarted(messageToSend, locale));
         } else {
-            messageToSend.setReplyMarkup(new InlineKeyboardMarkup(List.of(List.of(createLeaveOrDestroyButton(user)))));
-            messageToSend.setText(messageSource.getMessage(MessageCode.CANT_DO_ACTION_WISH_TO_LEAVE.getCode(), null, locale));
+            messageToSend.setText(messageSource.getMessage(MessageCode.CANT_DO_ACTION_RIGHT_NOW_SEE_HELP.getCode(), null, locale));
         }
 
         if (!roomStarted) {
             TelegramApiExecutorWrapper.execute(executor, messageToSend);
         }
+    }
+
+    private Boolean notFoundOrAlreadyStarted(SendMessage messageToSend, Locale locale) {
+        messageToSend.setText(messageSource.getMessage(MessageCode.NON_STARTED_ROOM_NOT_FOUND.getCode(), null, locale));
+        return false;
     }
 
     private boolean waitForAllOrStartAnywayIfEnough(SendMessage messageToSend, Locale locale, Room room) {
