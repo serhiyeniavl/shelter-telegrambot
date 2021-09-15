@@ -30,7 +30,7 @@ import java.util.Objects;
 
 @Action
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 public class StartGameCommandAction extends AbstractCommandAction {
 
     GameCreatorService gameCreatorService;
@@ -73,7 +73,7 @@ public class StartGameCommandAction extends AbstractCommandAction {
         return false;
     }
 
-    private boolean generateGame(TelegramLongPollingBot executor, Locale locale, Room room) {
+    protected boolean generateGame(TelegramLongPollingBot executor, Locale locale, Room room) {
         Map<Long, String> gameSetups = gameCreatorService.createGame(room.getPlayers(), locale);
         room.getPlayers().forEach(playerId -> {
             User player = userService.retrieveExistingUser(playerId);

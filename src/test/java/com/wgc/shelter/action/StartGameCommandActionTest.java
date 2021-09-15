@@ -51,18 +51,16 @@ class StartGameCommandActionTest extends BaseSpringBootTestClass {
                 player2.getTelegramUserId(), "game setup3",
                 player3.getTelegramUserId(), "game setup4");
         Mockito.doReturn(gameSetup)
-                .when(gameCreatorService).createGame(
-                        players,
-                        new Locale(initialOwner.getLocale()));
+                .when(gameCreatorService).createGame(players, new Locale(initialOwner.getLocale()));
 
         UpdateBotMessageSetup botMessageSetup1 = buildUpdateObject(initialOwner.getTelegramUserId(), "user", EN_US.toString(),
                 UserCommand.START_GAME.getCommand(), "ignore", null);
         UpdateBotMessageSetup botMessageSetup2 = buildUpdateObject(player1.getTelegramUserId(), "user", EN_US.toString(),
-                UserCommand.START_GAME.getCommand(), "ignore", null);
+                "ignore", "ignore", null);
         UpdateBotMessageSetup botMessageSetup3 = buildUpdateObject(player2.getTelegramUserId(), "user", EN_US.toString(),
-                UserCommand.START_GAME.getCommand(), "ignore", null);
+                "ignore", "ignore", null);
         UpdateBotMessageSetup botMessageSetup4 = buildUpdateObject(player3.getTelegramUserId(), "user", EN_US.toString(),
-                UserCommand.START_GAME.getCommand(), "ignore", null);
+                "ignore", "ignore", null);
 
         botMessageSetup1.messageToSend().setText(gameSetup.get(initialOwner.getTelegramUserId()));
         botMessageSetup2.messageToSend().setText(gameSetup.get(player1.getTelegramUserId()));
