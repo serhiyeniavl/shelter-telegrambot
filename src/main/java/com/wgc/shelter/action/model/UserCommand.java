@@ -11,7 +11,8 @@ public enum UserCommand {
     LEAVE("/leave"),
     JOIN("/join"),
     START_GAME("/start_game"),
-    START_GAME_ANYWAY("/start_game_anyway");
+    START_GAME_ANYWAY("/start_game_anyway"),
+    CHANGE_LANG("/change_lang");
 
     public String getCommand() {
         return command;

@@ -16,7 +16,8 @@ public enum MessageCode {
     WAIT_TO_JOIN_ALL_PLAYERS("wait.for.all.to.join"),
     START_ANYWAY("start.anyway"),
     NON_STARTED_ROOM_NOT_FOUND("non.started.room.not.found"),
-    CANT_DO_ACTION_RIGHT_NOW_SEE_HELP("cant.do.action.see.help");
+    CANT_DO_ACTION_RIGHT_NOW_SEE_HELP("cant.do.action.see.help"),
+    CHOOSE_LANG("choose.lang");
 
     public String getCode() {
         return messageBundleCode;

@@ -1,0 +1,8 @@
+languages:
+  all:
+    - name: Русккий
+      code: ru
+      unicode: 🇷🇺
+    - name: English
+      code: en
+      unicode: 🇺🇸
