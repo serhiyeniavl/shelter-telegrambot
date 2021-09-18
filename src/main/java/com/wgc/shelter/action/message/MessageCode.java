@@ -17,7 +17,9 @@ public enum MessageCode {
     START_ANYWAY("start.anyway"),
     NON_STARTED_ROOM_NOT_FOUND("non.started.room.not.found"),
     CANT_DO_ACTION_RIGHT_NOW_SEE_HELP("cant.do.action.see.help"),
-    CHOOSE_LANG("choose.lang");
+    CHOOSE_LANG("choose.lang"),
+    HELP("help"),
+    DESCRIPTION("description");
 
     public String getCode() {
         return messageBundleCode;

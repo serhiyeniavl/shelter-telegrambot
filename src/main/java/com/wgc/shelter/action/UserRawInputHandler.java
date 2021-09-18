@@ -9,6 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class UserRawInputHandler {
 
     public void handleInput(Update update) {
-
+        //input could be in callback data
     }
 }

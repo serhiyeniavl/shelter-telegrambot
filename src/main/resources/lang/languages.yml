@@ -1,6 +1,6 @@
 languages:
   all:
-    - name: Русккий
+    - name: Русский
       code: ru
       unicode: 🇷🇺
     - name: English

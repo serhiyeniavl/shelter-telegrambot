@@ -12,7 +12,9 @@ public enum UserCommand {
     JOIN("/join"),
     START_GAME("/start_game"),
     START_GAME_ANYWAY("/start_game_anyway"),
-    CHANGE_LANG("/change_lang");
+    CHANGE_LANG("/change_lang"),
+    HELP("/help"),
+    DESCRIPTION("/description");
 
     public String getCommand() {
         return command;
