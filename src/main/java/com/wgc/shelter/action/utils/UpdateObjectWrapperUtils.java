@@ -58,6 +58,10 @@ public class UpdateObjectWrapperUtils {
         return (split.length > 1) ? new UserCallbackData(UserCommand.fromValue(split[0]), split[1]) : new UserCallbackData(UserCommand.fromValue(split[0]), null);
     }
 
+    public static boolean isCallbackDataIsCommand(String data) {
+        return data.startsWith("/");
+    }
+
     public record UserCallbackData(UserCommand userCommand, String value) {
     }
 }

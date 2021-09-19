@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -23,7 +24,12 @@ class StartCommandActionTest extends BaseSpringBootTestClass {
 
         UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", "en-US",
                 UserCommand.START.getCommand(), "hello msg", null);
+
         Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(botMessageSetup.messageToSend());
+
+        //send available commands
+        Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(Mockito.any(BotApiMethod.class));
+        Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(Mockito.any(BotApiMethod.class));
 
         Assertions.assertDoesNotThrow(() -> telegramLongPollingController.onUpdateReceived(botMessageSetup.update()));
 

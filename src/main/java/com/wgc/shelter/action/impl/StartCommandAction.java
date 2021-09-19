@@ -7,7 +7,6 @@ import com.wgc.shelter.action.model.UserCommand;
 import com.wgc.shelter.action.utils.TelegramApiExecutorWrapper;
 import com.wgc.shelter.action.utils.UpdateObjectWrapperUtils;
 import com.wgc.shelter.config.LanguagesConfiguration;
-import com.wgc.shelter.config.bot.BotAvailableCommandsConfigurer;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -47,11 +46,11 @@ public class StartCommandAction extends AbstractCommandAction {
                     .text(messageSource.getMessage(MessageCode.HELLO.getCode(), null, locale))
                     .build();
             TelegramApiExecutorWrapper.execute(executor, messageToSend);
-            addCommandsForUser(UpdateObjectWrapperUtils.getChaId(update), executor);
+            addCommandsListForUser(UpdateObjectWrapperUtils.getChaId(update), executor);
         }
     }
 
-    public void addCommandsForUser(String chatId, TelegramLongPollingBot executor) {
+    private void addCommandsListForUser(String chatId, TelegramLongPollingBot executor) {
         languagesConfiguration.getAll().forEach(lang -> {
             Set<BotCommand> botCommands = Sets.newHashSet();
             Arrays.stream(UserCommand.values()).forEach(c -> {
