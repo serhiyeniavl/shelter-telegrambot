@@ -19,7 +19,9 @@ public enum MessageCode {
     CANT_DO_ACTION_RIGHT_NOW_SEE_HELP("cant.do.action.see.help"),
     CHOOSE_LANG("choose.lang"),
     HELP("help"),
-    DESCRIPTION("description");
+    DESCRIPTION("description"),
+    ROOM_SUCCESSFULLY_CREATED_WAIT_FOR_OTHERS("room.successfully.created.wait.for.others"),
+    QUANTITY_SHOULD_BE_BETWEEN("quantity.should.be.between");
 
     public String getCode() {
         return messageBundleCode;

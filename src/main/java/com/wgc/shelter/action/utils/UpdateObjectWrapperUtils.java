@@ -4,6 +4,7 @@ import com.wgc.shelter.action.model.UserCommand;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.text.TextStringBuilder;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Objects;
@@ -60,6 +61,21 @@ public class UpdateObjectWrapperUtils {
 
     public static boolean isCallbackDataIsCommand(String data) {
         return data.startsWith("/");
+    }
+
+    public static String getData(Update update) {
+        if (update.hasCallbackQuery()) {
+            return update.getCallbackQuery().getData();
+        } else {
+            return update.getMessage().getText();
+        }
+    }
+
+    public static SendMessage createEmptySendMessageForUserChat(Update update) {
+        return SendMessage.builder()
+                .chatId(UpdateObjectWrapperUtils.getChaId(update))
+                .text("")
+                .build();
     }
 
     public record UserCallbackData(UserCommand userCommand, String value) {

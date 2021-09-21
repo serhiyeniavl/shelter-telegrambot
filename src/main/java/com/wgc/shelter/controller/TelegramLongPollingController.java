@@ -32,6 +32,6 @@ public class TelegramLongPollingController extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         userInputResolver
                 .isCommand(update, command -> command.handleCommand(this, update))
-                .orRawInput(rawInputHandler -> rawInputHandler.handleInput(update));
+                .orRawInput(rawInputHandler -> rawInputHandler.handleInput(this, update));
     }
 }
