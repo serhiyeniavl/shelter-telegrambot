@@ -31,6 +31,9 @@ public class Room {
     @Indexed(unique = true)
     Long ownerId;
 
+    @Indexed(unique = true)
+    Long uniqueNumber;
+
     @Min(4)
     @Max(16)
     Integer playersQuantity;

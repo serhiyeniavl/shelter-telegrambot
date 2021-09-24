@@ -19,5 +19,7 @@ public interface RoomService {
 
     Optional<Room> findRoomByParticipant(Long participantId);
 
+    Optional<Room> findWaitingRoomByNumber(Long number);
+
     void deleteRoom(Long ownerId);
 }

@@ -49,7 +49,7 @@ public class CreateRoomResponseResolver implements UserResponseResolver {
                         .setLastActionDate(LocalDateTime.now()));
 
                 messageToSend.setText(messageSource
-                        .getMessage(MessageCode.ROOM_SUCCESSFULLY_CREATED_WAIT_FOR_OTHERS.getCode(), null, new Locale(user.getLocale())));
+                        .getMessage(MessageCode.ROOM_SUCCESSFULLY_CREATED_WAIT_FOR_OTHERS.getCode(), new Object[]{room.getUniqueNumber()}, new Locale(user.getLocale())));
             } else {
                 messageToSend.setText(messageSource
                         .getMessage(MessageCode.QUANTITY_SHOULD_BE_BETWEEN.getCode(),

@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Set;
 
 @SpringBootTest
@@ -57,6 +58,7 @@ public abstract class BaseSpringBootTestClass {
                 .state(state)
                 .players(players)
                 .playersQuantity(playersQuantity)
+                .uniqueNumber(new Random().nextLong())
                 .build());
     }
 

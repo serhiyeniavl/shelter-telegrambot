@@ -51,14 +51,13 @@ class CreateCommandActionTest extends BaseSpringBootTestClass {
 
                 () -> Assertions.assertNotNull(actualRoom.getLastActionDate()),
                 () -> Assertions.assertNotNull(actualRoom.getId()),
+                () -> Assertions.assertNotNull(actualRoom.getUniqueNumber()),
                 () -> Assertions.assertEquals(
                         Room.builder().ownerId(telegramUserId).state(RoomState.NEW).playersQuantity(4)
                                 .players(Collections.singleton(actualUser.getTelegramUserId()))
                                 .build(),
-                        roomRepository.findByOwnerId(telegramUserId).get().setId(null).setLastActionDate(null))
+                        roomRepository.findByOwnerId(telegramUserId).get().setId(null).setLastActionDate(null).setUniqueNumber(null))
         );
-
-
     }
 
     @Test

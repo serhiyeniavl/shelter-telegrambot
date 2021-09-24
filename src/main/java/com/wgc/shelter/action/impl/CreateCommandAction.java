@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 
 @Action
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -58,6 +59,7 @@ public class CreateCommandAction extends AbstractCommandAction {
         roomService.save(Room.builder()
                 .ownerId(userTelegramId)
                 .state(RoomState.NEW)
+                .uniqueNumber(generateRandomNumber())
                 .lastActionDate(LocalDateTime.now())
                 .playersQuantity(ROOM_MINIMUM_PLAYERS_QUANTITY)
                 .players(Collections.singleton(user.getTelegramUserId()))
@@ -66,6 +68,15 @@ public class CreateCommandAction extends AbstractCommandAction {
 
         messageToSend.setText(messageSource.getMessage(MessageCode.INPUT_ROOM_PARTICIPANTS_QUANTITY.getCode(),
                 null, locale));
+    }
+
+    private Long generateRandomNumber() {
+        while (true) {
+            long number = 1000 + new Random().nextLong(8999);
+            if (roomService.findWaitingRoomByNumber(number).isEmpty()) {
+                return number;
+            }
+        }
     }
 
     private void sendRoomAlreadyCreated(SendMessage messageToSend, Locale locale) {

@@ -15,4 +15,6 @@ public interface RoomRepository extends MongoRepository<Room, Long> {
     void deleteByOwnerId(Long ownerId);
 
     Optional<Room> findByOwnerIdAndStateNot(Long userTelegramId, RoomState started);
+
+    Optional<Room> findByUniqueNumberAndStateIs(Long number, RoomState waitingToJoin);
 }

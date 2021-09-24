@@ -37,7 +37,8 @@ class CreateRoomResponseResolverTest extends BaseSpringBootTestClass {
         Room initialRoom = saveRoom(telegramUserId, Set.of(telegramUserId), 4, RoomState.NEW, LocalDateTime.now());
 
         UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
-                quantity, messageSource.getMessage(MessageCode.ROOM_SUCCESSFULLY_CREATED_WAIT_FOR_OTHERS.getCode(), null, EN_US), null,
+                quantity, messageSource.getMessage(MessageCode.ROOM_SUCCESSFULLY_CREATED_WAIT_FOR_OTHERS.getCode(),
+                        new Object[] {initialRoom.getUniqueNumber()}, EN_US), null,
                 false);
 
         Mockito.doReturn(new Message()).when(telegramLongPollingController).execute(botMessageSetup.messageToSend());

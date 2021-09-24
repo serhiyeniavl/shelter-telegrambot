@@ -22,7 +22,11 @@ public enum MessageCode {
     DESCRIPTION("description"),
     ROOM_SUCCESSFULLY_CREATED_WAIT_FOR_OTHERS("room.successfully.created.wait.for.others"),
     QUANTITY_SHOULD_BE_BETWEEN("quantity.should.be.between"),
-    LANGUAGE_CHANGED("language.changed");
+    LANGUAGE_CHANGED("language.changed"),
+    INVALID_ROOM_NUMBER("invalid.room.number"),
+    ROOM_IS_FULL("room.is.full"),
+    ROOM_NOT_FOUND("room.not.found"),
+    JOINED_THE_ROOM("joined.room");
 
     public String getCode() {
         return messageBundleCode;

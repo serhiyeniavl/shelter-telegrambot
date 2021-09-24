@@ -1,6 +1,7 @@
 package com.wgc.shelter.action;
 
 import com.wgc.shelter.action.annotation.Handler;
+import com.wgc.shelter.action.impl.UnknownInputResolver;
 import com.wgc.shelter.action.response.UserResponseResolver;
 import com.wgc.shelter.action.utils.TelegramApiExecutorWrapper;
 import com.wgc.shelter.action.utils.UpdateObjectWrapperUtils;
@@ -24,10 +25,11 @@ public class UserRawInputHandler {
     Map<UserActionState, UserResponseResolver> responseResolvers;
     UserService userService;
 
+
     @Transactional
     public void handleInput(TelegramLongPollingBot executor, Update update) {
         User user = userService.retrieveExistingUser(UpdateObjectWrapperUtils.getUserTelegramId(update));
-        responseResolvers.get(user.getState()).doResolve(user, update)
+        responseResolvers.getOrDefault(user.getState(), new UnknownInputResolver()).doResolve(user, update)
                 .ifPresent(message -> TelegramApiExecutorWrapper.execute(executor, message));
     }
 }

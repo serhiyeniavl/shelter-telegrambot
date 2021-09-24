@@ -47,6 +47,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public Optional<Room> findWaitingRoomByNumber(Long number) {
+        return roomRepository.findByUniqueNumberAndStateIs(number, RoomState.WAITING_TO_JOIN);
+    }
+
+    @Override
     public void deleteRoom(Long ownerId) {
         roomRepository.deleteByOwnerId(ownerId);
     }
