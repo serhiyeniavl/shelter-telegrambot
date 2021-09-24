@@ -21,7 +21,8 @@ public enum MessageCode {
     HELP("help"),
     DESCRIPTION("description"),
     ROOM_SUCCESSFULLY_CREATED_WAIT_FOR_OTHERS("room.successfully.created.wait.for.others"),
-    QUANTITY_SHOULD_BE_BETWEEN("quantity.should.be.between");
+    QUANTITY_SHOULD_BE_BETWEEN("quantity.should.be.between"),
+    LANGUAGE_CHANGED("language.changed");
 
     public String getCode() {
         return messageBundleCode;

@@ -30,14 +30,42 @@ public class UpdateBotMessageSetup {
 
     public static UpdateBotMessageSetup buildUpdateObject(Long id, String firstName, String languageCode, String command, String messageText,
                                                           InlineKeyboardMarkup replyMarkup) {
+//        User user = new User(id, firstName, false);
+//        user.setLanguageCode(languageCode);
+//
+//        Message message = new Message();
+//        message.setMessageId(1);
+//        message.setFrom(user);
+//        message.setText(command);
+//        message.setEntities(Collections.singletonList(new MessageEntity(EntityType.BOTCOMMAND, 0, 15)));
+//        message.setChat(new Chat(id, "private"));
+//
+//        Update update = new Update();
+//        update.setUpdateId(1);
+//        update.setMessage(message);
+//
+//        SendMessage messageToSend = SendMessage.builder()
+//                .chatId(String.valueOf(update.getMessage().getChatId()))
+//                .text(messageText)
+//                .replyMarkup(replyMarkup)
+//                .build();
+
+        return buildUpdateObject(id, firstName, languageCode, command, messageText, replyMarkup, true);
+    }
+
+    public static UpdateBotMessageSetup buildUpdateObject(Long id, String firstName, String languageCode, String text, String messageText,
+                                                          InlineKeyboardMarkup replyMarkup, boolean isCommand) {
+
         User user = new User(id, firstName, false);
         user.setLanguageCode(languageCode);
 
         Message message = new Message();
         message.setMessageId(1);
         message.setFrom(user);
-        message.setText(command);
-        message.setEntities(Collections.singletonList(new MessageEntity(EntityType.BOTCOMMAND, 0, 15)));
+        message.setText(text);
+        if (isCommand) {
+            message.setEntities(Collections.singletonList(new MessageEntity(EntityType.BOTCOMMAND, 0, 15)));
+        }
         message.setChat(new Chat(id, "private"));
 
         Update update = new Update();

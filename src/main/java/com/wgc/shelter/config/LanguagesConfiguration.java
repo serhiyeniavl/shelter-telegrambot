@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -23,6 +24,11 @@ import java.util.List;
 public class LanguagesConfiguration {
 
     List<Language> all;
+
+    public boolean containsCode(String code) {
+        return all.stream()
+                .anyMatch(lang -> Objects.equals(lang.getCode(), code));
+    }
 
     @Data
     @NoArgsConstructor

@@ -54,6 +54,9 @@ public class UpdateObjectWrapperUtils {
     }
 
     public static UserCallbackData parseCallbackData(Update update) {
+        if (!update.hasCallbackQuery()) {
+            return new UserCallbackData(null, null);
+        }
         String data = update.getCallbackQuery().getData();
         String[] split = data.split("\\s+");
         return (split.length > 1) ? new UserCallbackData(UserCommand.fromValue(split[0]), split[1]) : new UserCallbackData(UserCommand.fromValue(split[0]), null);
