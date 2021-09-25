@@ -58,7 +58,7 @@ public abstract class BaseSpringBootTestClass {
                 .state(state)
                 .players(players)
                 .playersQuantity(playersQuantity)
-                .uniqueNumber(new Random().nextLong())
+                .uniqueNumber(new Random().nextLong(9999))
                 .build());
     }
 
