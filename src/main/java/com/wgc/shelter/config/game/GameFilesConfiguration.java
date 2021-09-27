@@ -22,13 +22,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
 public class GameFilesConfiguration {
 
-    @Getter
     private final Map<Config, Game> games = new HashMap<>();
 
     private static final String GAME_FILES_FOLDER = "/game";
@@ -38,7 +38,7 @@ public class GameFilesConfiguration {
     void init() throws URISyntaxException {
         Arrays.stream(Objects.requireNonNull(new File(Objects.requireNonNull(getClass().getResource(GAME_FILES_FOLDER)).toURI()).listFiles()))
                 .forEach(folderPath -> {
-                    final short[] count = {0};
+                    final int[] count = {0};
                     try {
                         Files.walk(Path.of(folderPath.getPath()))
                                 .filter(Files::isRegularFile)
@@ -58,6 +58,16 @@ public class GameFilesConfiguration {
                 });
     }
 
+    public Game getGame(String languageCode, Integer number) {
+        return games.get(new Config(languageCode, number));
+    }
+
+    public int countGames(String languageCode) {
+        return (int) games.entrySet().stream()
+                .filter(entry -> Objects.equals(languageCode, entry.getKey().getLanguageCode()))
+                .count();
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -65,7 +75,7 @@ public class GameFilesConfiguration {
     @EqualsAndHashCode
     public static class Config {
         String languageCode;
-        Short number;
+        Integer number;
     }
 
     @Data
@@ -74,11 +84,11 @@ public class GameFilesConfiguration {
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Game {
         String disasterDescription;
-        Set<String> shelterDescription;
+        List<String> shelterDescription;
 
         GameRoles roles;
 
-        Set<String> specialAbilities;
+        List<String> specialAbilities;
     }
 
     @Data
@@ -86,14 +96,14 @@ public class GameFilesConfiguration {
     @AllArgsConstructor
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class GameRoles {
-        Set<Map<String, Short>> professions;
-        Set<Map<String, Short>> health;
+        List<Map<String, Integer>> professions;
+        List<Map<String, Integer>> health;
         BiologicalCharacteristics biologicalCharacteristics;
-        Set<Map<String, Short>> additionalSkills;
-        Set<Map<String, Short>> humanQualities;
-        Set<Map<String, Short>> hobby;
-        Set<Map<String, Short>> phobia;
-        Set<Map<String, Short>> luggage;
+        List<Map<String, Integer>> additionalSkills;
+        List<Map<String, Integer>> humanQualities;
+        List<Map<String, Integer>> hobby;
+        List<Map<String, Integer>> phobia;
+        List<Map<String, Integer>> luggage;
     }
 
     @Data
@@ -101,8 +111,8 @@ public class GameFilesConfiguration {
     @AllArgsConstructor
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class BiologicalCharacteristics {
-        Set<String> gender;
+        List<String> gender;
         Short age;
-        Set<Map<String, Short>> sexuality;
+        List<Map<String, Short>> sexuality;
     }
 }
