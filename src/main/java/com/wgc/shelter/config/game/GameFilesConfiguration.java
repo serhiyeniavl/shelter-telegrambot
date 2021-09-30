@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +17,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
@@ -86,24 +85,16 @@ public class GameFilesConfiguration {
         String disasterDescription;
         List<String> shelterDescription;
 
-        GameRoles roles;
+        List<String> professions = new ArrayList<>();
+        List<String> health;
+        BiologicalCharacteristics biologicalCharacteristics;
+        List<String> additionalSkills;
+        List<String> humanQualities;
+        List<String> hobby;
+        List<String> phobia;
+        List<String> luggage;
 
         List<String> specialAbilities;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class GameRoles {
-        List<Map<String, Integer>> professions;
-        List<Map<String, Integer>> health;
-        BiologicalCharacteristics biologicalCharacteristics;
-        List<Map<String, Integer>> additionalSkills;
-        List<Map<String, Integer>> humanQualities;
-        List<Map<String, Integer>> hobby;
-        List<Map<String, Integer>> phobia;
-        List<Map<String, Integer>> luggage;
     }
 
     @Data
@@ -113,6 +104,6 @@ public class GameFilesConfiguration {
     public static class BiologicalCharacteristics {
         List<String> gender;
         Short age;
-        List<Map<String, Short>> sexuality;
+        List<String> sexuality;
     }
 }

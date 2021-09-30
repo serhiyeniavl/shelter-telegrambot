@@ -26,7 +26,17 @@ public enum MessageCode {
     INVALID_ROOM_NUMBER("invalid.room.number"),
     ROOM_IS_FULL("room.is.full"),
     ROOM_NOT_FOUND("room.not.found"),
-    JOINED_THE_ROOM("joined.room");
+    JOINED_THE_ROOM("joined.room"),
+    PLAYER_NUMBER("player.number"),
+    PROFESSION("profession"),
+    HEALTH("health"),
+    SPECIAL_ABILITIES("special.abilities"),
+    HOBBY("hobby"),
+    BIOLOGICAL_CHARACTERISTICS("biological.characteristics"),
+    PHOBIA("phobia"),
+    LUGGAGE("luggage"),
+    HUMAN_QUALITIES("human.qualities"),
+    ADDITIONAL_SKILLS("additional.skills");
 
     public String getCode() {
         return messageBundleCode;
