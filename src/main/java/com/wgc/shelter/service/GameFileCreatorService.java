@@ -51,6 +51,8 @@ public class GameFileCreatorService implements GameCreatorService {
         fillWithRandomValue(players.size(), game.getAdditionalSkills(), result, messageSource.getMessage(MessageCode.ADDITIONAL_SKILLS.getCode(), null, locale));
         fillWithRandomValue(players.size(), game.getLuggage(), result, messageSource.getMessage(MessageCode.LUGGAGE.getCode(), null, locale));
 
+        fillSpecialAbilities(players.size(), game.getSpecialAbilities(), result, messageSource.getMessage(MessageCode.SPECIAL_ABILITIES.getCode(), null, locale));
+
         TextStringBuilder commonPart = new TextStringBuilder().append(game.getDisasterDescription())
                 .appendNewLine().appendNewLine()
                 .append(game.getShelterDescription().get(new Random().nextInt(0, game.getShelterDescription().size())))
@@ -87,6 +89,31 @@ public class GameFileCreatorService implements GameCreatorService {
                             .append(new Random().nextInt(18, 70))
                             .append(" ").append("/").append(" ")
                             .append(sexuality)
+                            .toString());
+                });
+    }
+
+    private void fillSpecialAbilities(int playersSize, List<String> characteristics,
+                                      Map<Pair<Integer, Long>, List<String>> result, String characteristicName) {
+
+        IntStream.range(0, playersSize)
+                .forEach(index -> {
+                    List<Integer> abilities = new Random().ints(0, characteristics.size())
+                            .distinct()
+                            .boxed()
+                            .limit(2)
+                            .collect(Collectors.toList());
+
+                    result.get(result.keySet().stream().filter(pair -> Objects.equals(pair.getKey(), index)).findFirst().get()).add(new TextStringBuilder()
+                            .appendNewLine()
+                            .append(characteristicName)
+                            .append(": ")
+                            .appendNewLine()
+                            .append("1. ")
+                            .append(characteristics.get(abilities.get(0)))
+                            .appendNewLine()
+                            .append("2. ")
+                            .append(characteristics.get(abilities.get(1)))
                             .toString());
                 });
     }

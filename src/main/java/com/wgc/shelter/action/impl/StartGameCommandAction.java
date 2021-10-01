@@ -82,7 +82,7 @@ public class StartGameCommandAction extends AbstractCommandAction {
             TelegramApiExecutorWrapper.execute(executor, individualMessage);
             userService.save(player.setState(UserActionState.NEW_USER));
         });
-        roomService.save(room.setState(RoomState.STARTED).setLastActionDate(LocalDateTime.now()));
+        roomService.deleteRoom(room.getOwnerId());
         return true;
     }
 

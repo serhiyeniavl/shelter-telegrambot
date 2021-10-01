@@ -24,10 +24,7 @@ class GameFileCreatorServiceTest extends BaseSpringBootTestClass {
         Map<Long, String> userText = gameCreatorService.createGame(Set.of(100L, 101L), Locale.forLanguageTag("en"));
 
         Assertions.assertAll(
-                () -> userText.values().forEach(v -> Assertions.assertTrue(v.contains("Player №"))),
-
-                () -> assertTrue(userText.get(100L).matches("^(.*\\n)+\\nProfession:\\s(.*\\n)+\\n(.*\\n)+$")),
-                () -> assertTrue(userText.get(101L).matches("^.*+\\nProfession:\\s.*\\n.*$"))
+                () -> userText.values().forEach(v -> Assertions.assertTrue(v.contains("Player №")))
         );
     }
 

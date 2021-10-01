@@ -46,7 +46,7 @@ public class ChangeLangCommandAction extends AbstractCommandAction {
         Locale locale = new Locale(user.getLocale());
         List<List<InlineKeyboardButton>> buttons = Lists.newArrayList();
         languagesConfiguration.getAll().forEach(lang ->
-                buttons.add(List.of(KeyboardFactory.createInlineKeyboardButton(lang.getName() + lang.getUnicode(), lang.getCode()))));
+                buttons.add(List.of(KeyboardFactory.createInlineKeyboardButton(lang.getName() + lang.getUnicode(), UserCommand.CHANGE_LANG.getCommand() + " " + lang.getCode()))));
         messageToSend.setReplyMarkup(new InlineKeyboardMarkup(buttons));
         messageToSend.setText(messageSource.getMessage(MessageCode.CHOOSE_LANG.getCode(), null, locale));
         TelegramApiExecutorWrapper.execute(executor, messageToSend);

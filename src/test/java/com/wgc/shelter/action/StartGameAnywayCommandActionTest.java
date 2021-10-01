@@ -73,7 +73,6 @@ class StartGameAnywayCommandActionTest extends BaseSpringBootTestClass {
         User actualPlayer1 = userRepository.findByTelegramUserId(player1.getTelegramUserId()).get();
         User actualPlayer2 = userRepository.findByTelegramUserId(player2.getTelegramUserId()).get();
         User actualPlayer3 = userRepository.findByTelegramUserId(player3.getTelegramUserId()).get();
-        Room actualRoom = roomRepository.findByOwnerId(initialOwner.getTelegramUserId()).get();
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(initialOwner.setState(UserActionState.NEW_USER), actualOwner),
@@ -81,9 +80,7 @@ class StartGameAnywayCommandActionTest extends BaseSpringBootTestClass {
                 () -> Assertions.assertEquals(player2.setState(UserActionState.NEW_USER), actualPlayer2),
                 () -> Assertions.assertEquals(player3.setState(UserActionState.NEW_USER), actualPlayer3),
 
-                () -> Assertions.assertTrue(initialRoom.getLastActionDate().isBefore(actualRoom.getLastActionDate())),
-                () -> Assertions.assertEquals(initialRoom.setState(RoomState.STARTED).setLastActionDate(null).setPlayersQuantity(4),
-                        actualRoom.setLastActionDate(null))
+                () -> Assertions.assertTrue(roomRepository.findByOwnerId(initialOwner.getTelegramUserId()).isEmpty())
         );
     }
 

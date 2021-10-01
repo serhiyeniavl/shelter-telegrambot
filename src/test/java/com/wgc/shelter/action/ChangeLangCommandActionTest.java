@@ -32,8 +32,8 @@ class ChangeLangCommandActionTest extends BaseSpringBootTestClass {
 
         User initialUser = saveUser(telegramUserId, UserActionState.NEW_USER, EN_US.toString());
 
-        InlineKeyboardButton russian = KeyboardFactory.createInlineKeyboardButton("Русский\uD83C\uDDF7\uD83C\uDDFA", "ru");
-        InlineKeyboardButton english = KeyboardFactory.createInlineKeyboardButton("English\uD83C\uDDFA\uD83C\uDDF8", "en");
+        InlineKeyboardButton russian = KeyboardFactory.createInlineKeyboardButton("Русский\uD83C\uDDF7\uD83C\uDDFA", UserCommand.CHANGE_LANG.getCommand() + " ru");
+        InlineKeyboardButton english = KeyboardFactory.createInlineKeyboardButton("English\uD83C\uDDFA\uD83C\uDDF8", UserCommand.CHANGE_LANG.getCommand() + " en");
 
         UpdateBotMessageSetup botMessageSetup = buildUpdateObject(telegramUserId, "user", EN_US.toString(),
                 UserCommand.CHANGE_LANG.getCommand(), messageSource.getMessage(MessageCode.CHOOSE_LANG.getCode(), null, EN_US),
