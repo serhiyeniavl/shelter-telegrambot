@@ -1,6 +1,5 @@
 package com.wgc.shelter.service;
 
-import com.wgc.shelter.action.message.MessageCode;
 import com.wgc.shelter.common.BaseSpringBootTestClass;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class GameFileCreatorServiceTest extends BaseSpringBootTestClass {
 
@@ -27,5 +24,4 @@ class GameFileCreatorServiceTest extends BaseSpringBootTestClass {
                 () -> userText.values().forEach(v -> Assertions.assertTrue(v.contains("Player №")))
         );
     }
-
 }

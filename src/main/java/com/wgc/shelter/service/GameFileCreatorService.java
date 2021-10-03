@@ -40,18 +40,7 @@ public class GameFileCreatorService implements GameCreatorService {
         int[] playerIndex = {0};
         Map<Pair<Integer, Long>, List<String>> result = players.stream().collect(Collectors.toMap(id -> Pair.of(playerIndex[0]++, id), id -> new ArrayList<>()));
 
-        fillWithRandomValue(players.size(), game.getProfessions(), result, messageSource.getMessage(MessageCode.PROFESSION.getCode(), null, locale));
-        fillWithRandomValue(players.size(), game.getHealth(), result, messageSource.getMessage(MessageCode.HEALTH.getCode(), null, locale));
-
-        fillBiologicalCharacteristics(players.size(), game.getBiologicalCharacteristics(), result, messageSource.getMessage(MessageCode.BIOLOGICAL_CHARACTERISTICS.getCode(), null, locale));
-
-        fillWithRandomValue(players.size(), game.getHobby(), result, messageSource.getMessage(MessageCode.HOBBY.getCode(), null, locale));
-        fillWithRandomValue(players.size(), game.getHumanQualities(), result, messageSource.getMessage(MessageCode.HUMAN_QUALITIES.getCode(), null, locale));
-        fillWithRandomValue(players.size(), game.getPhobia(), result, messageSource.getMessage(MessageCode.PHOBIA.getCode(), null, locale));
-        fillWithRandomValue(players.size(), game.getAdditionalSkills(), result, messageSource.getMessage(MessageCode.ADDITIONAL_SKILLS.getCode(), null, locale));
-        fillWithRandomValue(players.size(), game.getLuggage(), result, messageSource.getMessage(MessageCode.LUGGAGE.getCode(), null, locale));
-
-        fillSpecialAbilities(players.size(), game.getSpecialAbilities(), result, messageSource.getMessage(MessageCode.SPECIAL_ABILITIES.getCode(), null, locale));
+        createResultMap(players, locale, game, result);
 
         TextStringBuilder commonPart = new TextStringBuilder().append(game.getDisasterDescription())
                 .appendNewLine().appendNewLine()
@@ -70,6 +59,21 @@ public class GameFileCreatorService implements GameCreatorService {
         });
 
         return finalResult;
+    }
+
+    private void createResultMap(Set<Long> players, Locale locale, Game game, Map<Pair<Integer, Long>, List<String>> result) {
+        fillWithRandomValue(players.size(), game.getProfessions(), result, messageSource.getMessage(MessageCode.PROFESSION.getCode(), null, locale));
+        fillWithRandomValue(players.size(), game.getHealth(), result, messageSource.getMessage(MessageCode.HEALTH.getCode(), null, locale));
+
+        fillBiologicalCharacteristics(players.size(), game.getBiologicalCharacteristics(), result, messageSource.getMessage(MessageCode.BIOLOGICAL_CHARACTERISTICS.getCode(), null, locale));
+
+        fillWithRandomValue(players.size(), game.getHobby(), result, messageSource.getMessage(MessageCode.HOBBY.getCode(), null, locale));
+        fillWithRandomValue(players.size(), game.getHumanQualities(), result, messageSource.getMessage(MessageCode.HUMAN_QUALITIES.getCode(), null, locale));
+        fillWithRandomValue(players.size(), game.getPhobia(), result, messageSource.getMessage(MessageCode.PHOBIA.getCode(), null, locale));
+        fillWithRandomValue(players.size(), game.getAdditionalSkills(), result, messageSource.getMessage(MessageCode.ADDITIONAL_SKILLS.getCode(), null, locale));
+        fillWithRandomValue(players.size(), game.getLuggage(), result, messageSource.getMessage(MessageCode.LUGGAGE.getCode(), null, locale));
+
+        fillSpecialAbilities(players.size(), game.getSpecialAbilities(), result, messageSource.getMessage(MessageCode.SPECIAL_ABILITIES.getCode(), null, locale));
     }
 
     private void fillBiologicalCharacteristics(int playersSize, GameFilesConfiguration.BiologicalCharacteristics characteristics,

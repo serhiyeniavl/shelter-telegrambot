@@ -4,6 +4,7 @@ import com.wgc.shelter.model.Room;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Transactional(propagation = Propagation.SUPPORTS)
@@ -22,4 +23,6 @@ public interface RoomService {
     Optional<Room> findWaitingRoomByNumber(Long number);
 
     void deleteRoom(Long ownerId);
+
+    void clearInactiveRooms(Duration inactivityTime);
 }

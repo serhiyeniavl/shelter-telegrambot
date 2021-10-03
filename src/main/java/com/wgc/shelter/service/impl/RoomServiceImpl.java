@@ -9,7 +9,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -54,5 +57,11 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void deleteRoom(Long ownerId) {
         roomRepository.deleteByOwnerId(ownerId);
+    }
+
+    @Override
+    @Transactional
+    public void clearInactiveRooms(Duration inactivityTime) {
+        roomRepository.deleteAll(roomRepository.findAllByLastActionDateLessThanEqual(LocalDateTime.now().minus(inactivityTime)));
     }
 }
