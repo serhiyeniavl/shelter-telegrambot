@@ -1,5 +1,6 @@
 package com.wgc.shelter.service;
 
+import com.codepoetics.protonpack.StreamUtils;
 import com.wgc.shelter.action.message.MessageCode;
 import com.wgc.shelter.config.game.GameFilesConfiguration;
 import lombok.AccessLevel;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -37,8 +39,13 @@ public class GameFileCreatorService implements GameCreatorService {
         String language = locale.getLanguage();
         Game game = gameFilesConfiguration.getGame(language, new Random().nextInt(0, gameFilesConfiguration.countGames(language)));
 
-        int[] playerIndex = {0};
-        Map<Pair<Integer, Long>, List<String>> result = players.stream().collect(Collectors.toMap(id -> Pair.of(playerIndex[0]++, id), id -> new ArrayList<>()));
+//        int[] playerIndex = {0};
+//        Map<Pair<Integer, Long>, List<String>> result = players.stream().collect(Collectors.toMap(id -> Pair.of(playerIndex[0]++, id), id -> new ArrayList<>()));
+
+        Map<Pair<Integer, Long>, List<String>> result = StreamUtils
+                .zip(players.stream(), IntStream.rangeClosed(0, players.size() - 1).boxed(), (player, number) -> Pair.of(number, player))
+                .collect(Collectors.toMap(Function.identity(), pair -> new ArrayList<>()));
+
 
         createResultMap(players, locale, game, result);
 
@@ -106,7 +113,7 @@ public class GameFileCreatorService implements GameCreatorService {
                             .distinct()
                             .boxed()
                             .limit(2)
-                            .collect(Collectors.toList());
+                            .toList();
 
                     result.get(result.keySet().stream().filter(pair -> Objects.equals(pair.getKey(), index)).findFirst().get()).add(new TextStringBuilder()
                             .appendNewLine()
@@ -129,7 +136,7 @@ public class GameFileCreatorService implements GameCreatorService {
                 .distinct()
                 .boxed()
                 .limit(playersSize)
-                .collect(Collectors.toList());
+                .toList();
 
         IntStream.range(0, playersSize)
                 .forEach(index -> {
