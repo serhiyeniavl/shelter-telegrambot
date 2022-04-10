@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.wgc.shelter.common.UpdateBotMessageSetup.buildUpdateObject;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ChangeLangCommandActionTest extends BaseSpringBootTestClass {
 

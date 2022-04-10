@@ -1,5 +1,6 @@
 package com.wgc.shelter.config.game;
 
+import com.codepoetics.protonpack.StreamUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.AccessLevel;
@@ -23,30 +24,62 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Slf4j
 @Configuration
 public class GameFilesConfiguration {
 
-    private final Map<Config, Game> games = new HashMap<>();
+    private final Map<Config, Disaster> disasters = new HashMap<>();
+    private final Map<Config, Cards> cards = new HashMap<>();
 
-    private static final String GAME_FILES_FOLDER = "/game";
+    private static final String DISASTERS_PATH = "/game/disasters";
+    private static final String CARDS_PATH = "/game/cards";
 
 
     @PostConstruct
     void init() throws URISyntaxException {
-        Arrays.stream(Objects.requireNonNull(new File(Objects.requireNonNull(getClass().getResource(GAME_FILES_FOLDER)).toURI()).listFiles()))
-                .forEach(folderPath -> {
-                    final int[] count = {0};
+        loadDisasters();
+        loadCards();
+    }
+
+    private void loadDisasters() throws URISyntaxException {
+        StreamUtils.zipWithIndex(streamFiles(DISASTERS_PATH))
+                .forEach(indexedFolderPath -> {
                     try {
-                        Files.walk(Path.of(folderPath.getPath()))
+                        Files.walk(Path.of(indexedFolderPath.getValue().getPath()))
                                 .filter(Files::isRegularFile)
                                 .forEach(filePath -> {
                                     try {
-                                        Game game = new ObjectMapper(new YAMLFactory()).readValue(filePath.toFile(), Game.class);
-                                        games.put(new Config(folderPath.getName(), count[0]++), game);
+                                        Disaster disaster = new ObjectMapper(
+                                                new YAMLFactory()).readValue(filePath.toFile(), Disaster.class);
+                                        disasters.put(new Config(indexedFolderPath.getValue().getName(),
+                                                Math.toIntExact(indexedFolderPath.getIndex())), disaster);
                                     } catch (IOException e) {
                                         log.error("Error occurred during load game files", e);
+                                        throw new RuntimeException(e);
+                                    }
+                                });
+                    } catch (IOException e) {
+                        log.error("Error occurred during load disaster files", e);
+                        throw new RuntimeException(e);
+                    }
+                });
+    }
+
+    private void loadCards() throws URISyntaxException {
+        StreamUtils.zipWithIndex(streamFiles(CARDS_PATH))
+                .forEach(indexedFolderPath -> {
+                    try {
+                        Files.walk(Path.of(indexedFolderPath.getValue().getPath()))
+                                .filter(Files::isRegularFile)
+                                .forEach(filePath -> {
+                                    try {
+                                        Cards cards = new ObjectMapper(
+                                                new YAMLFactory()).readValue(filePath.toFile(), Cards.class);
+                                        this.cards.put(new Config(indexedFolderPath.getValue().getName()), cards);
+                                    } catch (IOException e) {
+                                        log.error("Error occurred during load cards files", e);
                                         throw new RuntimeException(e);
                                     }
                                 });
@@ -57,15 +90,26 @@ public class GameFilesConfiguration {
                 });
     }
 
-    public Game getGame(String languageCode, Integer number) {
-        return games.get(new Config(languageCode, number));
+    private Stream<File> streamFiles(String cardsPath) throws URISyntaxException {
+        return Arrays.stream(Objects.requireNonNull(
+                new File(Objects.requireNonNull(getClass().getResource(cardsPath)).toURI())
+                        .listFiles()));
     }
 
-    public int countGames(String languageCode) {
-        return (int) games.entrySet().stream()
+    public Disaster getDisaster(String languageCode, Integer number) {
+        return disasters.get(new Config(languageCode, number));
+    }
+
+    public Cards getCards(String languageCode) {
+        return this.cards.get(new Config(languageCode));
+    }
+
+    public int countDisasters(String languageCode) {
+        return (int) disasters.entrySet().stream()
                 .filter(entry -> Objects.equals(languageCode, entry.getKey().getLanguageCode()))
                 .count();
     }
+
 
     @Data
     @NoArgsConstructor
@@ -75,23 +119,34 @@ public class GameFilesConfiguration {
     public static class Config {
         String languageCode;
         Integer number;
+
+        public Config(String languageCode) {
+            this.languageCode = languageCode;
+        }
+
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class Game {
+    public static class Disaster {
         String disasterDescription;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class Cards {
         List<String> shelterDescription;
 
         List<String> professions = new ArrayList<>();
         List<String> health;
         BiologicalCharacteristics biologicalCharacteristics;
         List<String> additionalSkills;
-        List<String> humanQualities;
         List<String> hobby;
-        List<String> phobia;
+        List<String> threat;
         List<String> luggage;
 
         List<String> specialAbilities;

@@ -18,7 +18,10 @@ class GameFileCreatorServiceTest extends BaseSpringBootTestClass {
     @Test
     @DisplayName("Create game test")
     void createGameTest() {
-        Map<Long, String> userText = gameCreatorService.createGame(Set.of(100L, 101L), Locale.forLanguageTag("en"));
+        Map<Long, String> userText = gameCreatorService.createGame(Set.of(100L, 101L), Locale.forLanguageTag("ru"));
+
+        System.out.println(userText.get(100L));
+        System.out.println(userText.get(101L));
 
         Assertions.assertAll(
                 () -> userText.values().forEach(v -> Assertions.assertTrue(v.contains("Player №")))
